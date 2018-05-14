@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    background: #F5F5F5;
+    font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/** =======================
+ * Contenedor Principal
+ ===========================*/
+
+.accordion {
+    width: 260px;
+    max-width: 260px;
+    height: 100%;
+    min-height: 100%;
+    background: #FFF;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    float: left;
+}
+
+.accordion .link {
+    cursor: pointer;
+    display: block;
+    padding: 15px 15px 15px 42px;
+    color: #4D4D4D;
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid #CCC;
+    position: relative;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+
+.accordion li:last-child .link {
+    border-bottom: 0;
+}
+
+.accordion li i {
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    font-size: 18px;
+    color: #595959;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+
+.accordion li i.fa-chevron-down {
+    right: 12px;
+    left: auto;
+    font-size: 16px;
+}
+
+.accordion li.open .link {
+    color: #b63b4d;
+}
+
+.accordion li.open i {
+    color: #b63b4d;
+}
+
+.accordion li.open i.fa-chevron-down {
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+/**
+ * Submenu
+ -----------------------------*/
+.submenu {
+    display: none;
+    background: #5a5a52;
+    font-size: 14px;
+}
+
+.submenu li {
+    border-bottom: 1px solid #4b4a5e;
+}
+
+.submenu a {
+    display: block;
+    text-decoration: none;
+    color: #d9d9d9;
+    padding: 12px;
+    padding-left: 42px;
+    -webkit-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.submenu a:hover {
+    background: #b63b4d;
+    color: #FFF;
+}
+
+.submenuASelect {
+    background: #b63b4d;
+    color: #FFF;
+}
+
+.table {
+    margin-bottom: 8px;
+    background-color: #fdfdfd;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table td i {
+    margin: 0 2px;
+}
+
+.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+    background-color: #F5F5F5
+}
+
+.table-nowrap td {
+    width: 200px;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.controls {
+    display: inline-block;
+    padding-top: 5px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.controls {
+    text-align: left;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.controls a {
+    border: 0;
+}
+
+.controls input {
+    border: 0;
+    color: #999;
+    width: 30px;
+    padding: 0;
+    margin: -3px 0 0 0;
+    text-align: center;
+}
+
+.pagination {
+    margin: 8px 0;
+}
+
+.pagination .controls a {
+    border: 0;
+}
+
+.pagination .controls input {
+    border: 0;
+    color: #999;
+    width: 30px;
+    padding: 0;
+    margin: -3px 0 0 0;
+    text-align: center;
+}
+
+.pagination ul > li {
+    display: inline;
+}
+
+.pagination ul > li > a, .pagination ul > li > span {
+    float: left;
+    padding: 4px 12px;
+    line-height: 20px;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-left-width: 0;
+}
+
+.pagination ul > li > a:hover, .pagination ul > li > a:focus, .pagination ul > .active > a, .pagination ul > .active > span {
+    background-color: #f5f5f5;
+}
+
+.pagination ul > .disabled > span, .pagination ul > .disabled > a, .pagination ul > .disabled > a:hover, .pagination ul > .disabled > a:focus {
+    color: #999;
+    cursor: default;
+    background-color: transparent;
+}
+
+.form-horizontal {margin:0 10px;} .form-horizontal .control-group {margin-bottom:8px;}
+.form-horizontal .control-label {padding-top:3px;} .form-horizontal .controls {text-align:left;overflow-x:auto;overflow-y:hidden;}
+.form-horizontal .controls label.error {background-position:0 2px;}
+
+.form-horizontal .table-form{width:100%;border-color:#dddddd;}
+.form-horizontal .table-form, .form-horizontal .table-form td{border:1px solid #ddd;background-color:#fdfdfd;padding:4px;}
+.form-horizontal .table-form td.tit{background:#fafafa;text-align:center;padding-right:8px;white-space:nowrap;}
+.form-horizontal .form-actions{margin-bottom:0;}
+
+.form-horizontal fieldset .row-fluid {margin-bottom:10px;}
+
+.form-horizontal input[type="text"],.form-horizontal textarea {text-align:left;width: 206px;height: 30px;border: solid #eee;}
+
+.input-min{width:30px;} .input-mini{width:90px;} .input-small{width:120px;} .input-medium {width:163px;}.input-xxlarge {width:460px;}
+.form-search {background-color: #eee;}
+.form-search label{margin-left:10px;}
+.form-search span label{margin-left:0;}
+.form-search .ul-form {margin:0;overflow:hidden;}
+.form-search .ul-form li{float:left;list-style:none;height:35px;line-height:35px;}
+.form-search .ul-form li label{width:80px;text-align:right;}
+.form-search .ul-form li span label{width:auto;}
+.form-search .ul-form li.clearfix{float:none;}
+.form-search .ul-form li.btns{padding-left:10px;}
+.form-search .ul-form li.btns .btn{margin-right:5px;}
