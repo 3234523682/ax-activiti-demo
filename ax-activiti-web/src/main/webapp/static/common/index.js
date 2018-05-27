@@ -33,3 +33,34 @@ $(function () {
     // 组提示
     $('.txtTitle').tooltip();
 });
+
+function operationFailureNotice(content) {
+    new jBox('Notice', {
+        attributes: {x: 'left', y: 'bottom'},
+        stack: false,
+        animation: {open: 'tada', close: 'zoomIn'},
+        autoClose: Math.random() * 2000 + 2000,
+        color: 'red',
+        title: '温馨提示',
+        content: content,
+        delayOnHover: true,
+        showCountdown: true,
+        closeButton: true
+    });
+}
+
+function operationSucceedNotice(content, closeFun) {
+    new jBox('Notice', {
+        attributes: {x: 'right', y: 'bottom'},
+        stack: false,
+        animation: {open: 'tada', close: 'zoomIn'},
+        autoClose: Math.random() * 100 + 1000,
+        color: 'green',
+        title: '温馨提示',
+        content: content,
+        delayOnHover: true,
+        showCountdown: true,
+        closeButton: true,
+        onClose: closeFun
+    });
+}

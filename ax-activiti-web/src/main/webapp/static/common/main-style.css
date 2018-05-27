@@ -157,7 +157,7 @@ body {
     border: 0;
 }
 
-.controls input {
+.pagination .controls input {
     border: 0;
     color: #999;
     width: 30px;
@@ -207,27 +207,135 @@ body {
     background-color: transparent;
 }
 
-.form-horizontal {margin:0 10px;} .form-horizontal .control-group {margin-bottom:8px;}
-.form-horizontal .control-label {padding-top:3px;} .form-horizontal .controls {text-align:left;overflow-x:auto;overflow-y:hidden;}
-.form-horizontal .controls label.error {background-position:0 2px;}
+.help-block, .help-inline {
+    color: #4cae4c;
+}
 
-.form-horizontal .table-form{width:100%;border-color:#dddddd;}
-.form-horizontal .table-form, .form-horizontal .table-form td{border:1px solid #ddd;background-color:#fdfdfd;padding:4px;}
-.form-horizontal .table-form td.tit{background:#fafafa;text-align:center;padding-right:8px;white-space:nowrap;}
-.form-horizontal .form-actions{margin-bottom:0;}
+.alert {
+    margin-bottom: 10px;
+}
 
-.form-horizontal fieldset .row-fluid {margin-bottom:10px;}
+.form-horizontal {
+    margin: 0 10px;
+}
 
-.form-horizontal input[type="text"],.form-horizontal textarea {text-align:left;width: 206px;height: 30px;border: solid #eee;}
+.form-horizontal .control-group {
+    margin-bottom: 8px;
+}
 
-.input-min{width:30px;} .input-mini{width:90px;} .input-small{width:120px;} .input-medium {width:163px;}.input-xxlarge {width:460px;}
-.form-search {background-color: #eee;}
-.form-search label{margin-left:10px;}
-.form-search span label{margin-left:0;}
-.form-search .ul-form {margin:0;overflow:hidden;}
-.form-search .ul-form li{float:left;list-style:none;height:35px;line-height:35px;}
-.form-search .ul-form li label{width:80px;text-align:right;}
-.form-search .ul-form li span label{width:auto;}
-.form-search .ul-form li.clearfix{float:none;}
-.form-search .ul-form li.btns{padding-left:10px;}
-.form-search .ul-form li.btns .btn{margin-right:5px;}
+.form-horizontal .control-label {
+    padding-top: 3px;
+}
+
+.form-horizontal .controls {
+    text-align: left;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.form-horizontal .controls label.error {
+    background-position: 0 2px;
+}
+
+.form-horizontal .controls textarea {
+    width: 300px;
+    height: 100px;
+}
+
+.form-horizontal .table-form {
+    width: 100%;
+    border-color: #dddddd;
+}
+
+.form-horizontal .table-form, .form-horizontal .table-form td {
+    border: 1px solid #ddd;
+    background-color: #fdfdfd;
+    padding: 4px;
+}
+
+.form-horizontal .table-form td.tit {
+    background: #fafafa;
+    text-align: center;
+    padding-right: 8px;
+    white-space: nowrap;
+}
+
+.form-horizontal .form-actions {
+    margin-bottom: 0;
+}
+
+.form-horizontal fieldset .row-fluid {
+    margin-bottom: 10px;
+}
+
+.form-horizontal input[type="text"], .form-horizontal textarea {
+    text-align: left;
+    width: 206px;
+    height: 30px;
+    border: solid #eee;
+}
+
+.input-min {
+    width: 30px;
+}
+
+.input-mini {
+    width: 90px;
+}
+
+.input-small {
+    width: 120px;
+}
+
+.input-medium {
+    width: 163px;
+}
+
+.input-xxlarge {
+    width: 460px;
+}
+
+.form-search {
+    background-color: #eee;
+}
+
+.form-search label {
+    margin-left: 10px;
+}
+
+.form-search span label {
+    margin-left: 0;
+}
+
+.form-search .ul-form {
+    margin: 0;
+    overflow: hidden;
+}
+
+.form-search .ul-form li {
+    float: left;
+    list-style: none;
+    height: 35px;
+    line-height: 35px;
+}
+
+.form-search .ul-form li label {
+    width: 80px;
+    text-align: right;
+}
+
+.form-search .ul-form li span label {
+    width: auto;
+}
+
+.form-search .ul-form li.clearfix {
+    float: none;
+}
+
+.form-search .ul-form li.btns {
+    padding-left: 10px;
+}
+
+.form-search .ul-form li.btns .btn {
+    margin-right: 5px;
+}

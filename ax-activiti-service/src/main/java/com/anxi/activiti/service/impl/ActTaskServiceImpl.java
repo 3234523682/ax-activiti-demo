@@ -11,6 +11,8 @@ import com.anxi.activiti.vo.ActTaskCompleteDTO;
 import com.anxi.activiti.vo.ActTaskDeleteDTO;
 import com.anxi.activiti.vo.ActTaskPageQuery;
 import com.anxi.activiti.vo.ActTaskVO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,7 +67,7 @@ public class ActTaskServiceImpl implements ActTaskService {
     public PageInfo<ActTaskVO> pageFindAwaitClaimTask(ActTaskPageQuery actTaskPageQuery) {
         TaskQuery todoTaskQuery = taskService.createTaskQuery();
         if (!StringUtils.isEmpty(actTaskPageQuery.getUserId())) {
-            todoTaskQuery.taskAssignee(actTaskPageQuery.getUserId());
+            todoTaskQuery.taskInvolvedUser(actTaskPageQuery.getUserId());
         }
         todoTaskQuery.active().includeProcessVariables().orderByTaskCreateTime().desc();
         return this.pageFindActTask(todoTaskQuery, actTaskPageQuery);
@@ -75,7 +78,7 @@ public class ActTaskServiceImpl implements ActTaskService {
         String userId = actTaskPageQuery.getUserId();
         TaskQuery toClaimQuery = taskService.createTaskQuery();
         if (!StringUtils.isEmpty(userId)) {
-            toClaimQuery.taskCandidateUser(userId);
+            toClaimQuery.taskAssignee(userId);
         }
         toClaimQuery.includeProcessVariables().active().orderByTaskCreateTime().desc();
         return this.pageFindActTask(toClaimQuery, actTaskPageQuery);
@@ -158,7 +161,7 @@ public class ActTaskServiceImpl implements ActTaskService {
                 if (StringUtils.isNotBlank(histIns.getTaskId())) {
                     List<Comment> commentList = taskService.getTaskComments(histIns.getTaskId());
                     if (commentList.size() > 0) {
-                        historicActivity.setActivityType(commentList.get(0).getFullMessage());
+                        historicActivity.setAuditType(commentList.get(0).getFullMessage());
                         historicActivity.setComment(commentList.size() >= 2 ? commentList.get(1).getFullMessage() : null);
                     }
                 }
@@ -186,17 +189,20 @@ public class ActTaskServiceImpl implements ActTaskService {
 
     @Override
     @Transactional
-    public String startProcess(ActProcessStartDTO actProcessStartVo) {
+    public String startProcess(ActProcessStartDTO actProcessStartVo) throws IOException {
         String processStartUserId = actProcessStartVo.getProcessStartUserId();
         String procDefKey = actProcessStartVo.getProcDefKey();
         String processTitle = actProcessStartVo.getProcessTitle();
+        Map<String, Object> vars = new HashMap<>();
+        String flowParamJsonStr = actProcessStartVo.getFlowParamJsonStr();
+        if(!StringUtils.isEmpty(flowParamJsonStr)){
+            ObjectMapper mapper = new ObjectMapper();
+            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String,Object>>(){});
+        }
+
         // 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
         identityService.setAuthenticatedUserId(processStartUserId);
-        Map<String, Object> vars = new HashMap<>();
-        // 设置流程标题
-        if (StringUtils.isNotBlank(processTitle)) {
-            vars.put("title", processTitle);
-        }
+
         // 启动流程
         ProcessInstance procIns = runtimeService.startProcessInstanceByKey(procDefKey, vars);
         runtimeService.setProcessInstanceName(procIns.getProcessInstanceId(), processTitle);
@@ -235,21 +241,23 @@ public class ActTaskServiceImpl implements ActTaskService {
 
     @Override
     @Transactional
-    public void completeTask(ActTaskCompleteDTO actTaskCompleteVo) {
+    public void completeTask(ActTaskCompleteDTO actTaskCompleteVo) throws IOException {
         String procInsId = actTaskCompleteVo.getProcInsId();
         String taskId = actTaskCompleteVo.getTaskId();
         String commentType = actTaskCompleteVo.getCommentType();
         String comment = actTaskCompleteVo.getComment();
-        Map<String, Object> vars = actTaskCompleteVo.getVars();
+        String flowParamJsonStr = actTaskCompleteVo.getFlowParamJsonStr();
+        Map<String, Object> vars = new HashMap<>();
+        if(!StringUtils.isEmpty(flowParamJsonStr)){
+            ObjectMapper mapper = new ObjectMapper();
+            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String,Object>>(){});
+        }
         // 添加意见
         if (StringUtils.isNotBlank(procInsId) && StringUtils.isNotBlank(commentType) && StringUtils.isNotBlank(comment)) {
             //第一条添加审批结果
             taskService.addComment(taskId, procInsId, commentType);
             //第二条添加审批意见
             taskService.addComment(taskId, procInsId, comment);
-        }
-        if (null == vars) {
-            vars = new HashMap<>();
         }
         // 提交任务
         taskService.complete(taskId, vars);
@@ -331,8 +339,8 @@ public class ActTaskServiceImpl implements ActTaskService {
         actTask.setTaskDefinitionKey(task.getTaskDefinitionKey());
         actTask.setTaskProcessName(hi.getProcessDefinitionName());
         actTask.setTaskName(hi.getName());
-        actTask.setTaskExecutionId(task.getExecutionId());
         actTask.setTaskInitiator(hi.getStartUserId());
+        actTask.setTaskProcDefVersion(hi.getProcessDefinitionVersion());
         return actTask;
     }
 

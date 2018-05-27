@@ -14,8 +14,10 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by LJ on 2018/5/8
@@ -28,7 +30,7 @@ public class ActIdentityController {
     private ActIdentityService actIdentityService;
 
     @RequestMapping(value = "actUserList")
-    public String actUserList(ActUserQuery actUserQuery, Model model) {
+    public String actUserList(@FormPostParam ActUserQuery actUserQuery, Model model) {
         PageInfo<ActUserVO> actUserVOPageInfo = actIdentityService.queryPageActUser(actUserQuery);
         if (!actUserVOPageInfo.getList().isEmpty()) {
             ActGroupQuery actGroupQuery = new ActGroupQuery();
@@ -123,6 +125,17 @@ public class ActIdentityController {
     public String updateMembership(ActMembershipOperateDTO actMembershipOperateDTO) {
         actIdentityService.createMembership(actMembershipOperateDTO);
         return "redirect:/workflow/identity/actUserList";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/userIdSet")
+    public String userIdSet(String userId, HttpServletRequest request) {
+        ActUserVO actUserVO = actIdentityService.getActUserById(userId);
+        if (null == actUserVO) {
+            return "false";
+        }
+        request.getSession().setAttribute("actUser", actUserVO);
+        return "true";
     }
 
 }

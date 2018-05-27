@@ -2,6 +2,7 @@ package com.anxi.activiti.service.api;
 
 import com.anxi.activiti.vo.ActProcessDefinitionQuery;
 import com.anxi.activiti.vo.ActProcessDefinitionVO;
+import com.anxi.activiti.vo.ActProcessDeployDTO;
 import com.anxi.activiti.vo.ActProcessInsVO;
 import com.anxi.activiti.vo.ActProcessInstanceQuery;
 import com.anxi.activiti.vo.DeleteProcInsDTO;
@@ -11,7 +12,6 @@ import com.anxi.activiti.vo.SetProcessStateDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by LJ on 2018/3/26
@@ -37,6 +37,11 @@ public interface ActProcessService {
      * 挂起、激活流程实例
      */
     void setProcessState(SetProcessStateDTO setProcessState);
+
+    /**
+     * 流程部署
+     */
+    boolean processDeploy(ActProcessDeployDTO actProcessDeployDTO);
 
     /**
      * 将部署的流程转换为模型

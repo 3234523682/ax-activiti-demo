@@ -8,15 +8,14 @@
 <body>
 <ul class="nav nav-tabs">
     <li><a href="${ctx}/workflow/process/">流程管理</a></li>
+    <li><a href="${ctx}/workflow/process/deploy/">部署流程</a></li>
     <li class="active"><a href="${ctx}/workflow/process/running/">运行中的流程</a></li>
 </ul>
 <form id="searchForm" action="${ctx}/workflow/process/running/" method="post" class="breadcrumb form-search">
     <label>流程实例ID：</label><input type="text" id="procInsId" name="procInsId" value="${procInsId}" class="input-medium"/>
-    <label>流程定义Key：</label><input type="text" id="procDefKey" name="procDefKey" value="${procDefKey}"
-                                  class="input-medium"/>
+    <label>流程定义Key：</label><input type="text" id="procDefKey" name="procDefKey" value="${procDefKey}" class="input-medium"/>
     &nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 </form>
-<sys:message content="${message}"/>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     <tr>

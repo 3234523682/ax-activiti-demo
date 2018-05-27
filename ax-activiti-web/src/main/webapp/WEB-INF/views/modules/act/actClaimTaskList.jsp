@@ -13,26 +13,45 @@
          * 签收任务
          */
         function claim(taskId) {
-            $.get('${ctx}/workflow/task/claim', {taskId: taskId}, function (data) {
-                if (data == 'true') {
-                    top.$.jBox.tip('签收完成');
-                    location = '${ctx}/act/task/todo/';
-                } else {
-                    top.$.jBox.tip('签收失败');
-                }
-            });
+            if (!nowUserId) {
+                new jBox('Notice', {
+                    attributes: {x: 'right', y: 'bottom'},
+                    stack: false,
+                    animation: {open: 'tada', close: 'zoomIn'},
+                    autoClose: Math.random() * 1000 + 2000,
+                    color: 'red',
+                    title: '温馨提示',
+                    content: '请先登录！！',
+                    delayOnHover: true,
+                    showCountdown: true,
+                    closeButton: true
+                });
+            } else {
+                $.get('${ctx}/workflow/task/claim', {taskId: taskId, userId: nowUserId}, function (data) {
+                    if (data == 'true') {
+                        operationSucceedNotice('签收完成',function () {
+                            location.reload();
+                        });
+                    } else {
+                        operationFailureNotice('签收失败');
+                    }
+                });
+            }
         }
     </script>
 </head>
 <body>
 <ul class="nav nav-tabs">
-    <li class="active"><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>
+    <%--<li class="active"><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>--%>
     <li><a href="${ctx}/workflow/task/alreadyClaimTaskList">待办任务列表</a></li>
     <li><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
     <li><a href="${ctx}/workflow/task/process">新建任务</a></li>
 </ul>
-<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/awaitClaimTaskList" method="post" class="breadcrumb form-search">
-    <label>任务标题：</label><input type="text" name="taskProcessInstanceName" value="${queryParam.taskProcessInstanceName}"/>
+<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/awaitClaimTaskList"
+           method="post" class="breadcrumb form-search">
+    <label>归属用户：</label><input type="text" name="userId" value="${queryParam.userId}"/>
+    <label>任务名称：</label><input type="text" name="taskProcessInstanceName"
+                               value="${queryParam.taskProcessInstanceName}"/>
     <label>事项：</label><input type="text" name="procDefName" value="${queryParam.procDefName}"/>
     <label>发起人：</label><input type="text" name="taskInitiator" value="${queryParam.taskInitiator}"/>
     <label>步骤：</label><input type="text" name="taskNodeName" value="${queryParam.taskNodeName}"/>
@@ -59,11 +78,10 @@
             <td>${actTask.taskProcessName}</td>
             <td>${actTask.taskName}</td>
             <td>${actTask.taskInitiator}</td>
-            <td>${actTask.taskInitiator}</td>
+            <td>${actTask.currentNodeName}</td>
             <td>
                 <c:forEach items="${actTask.processVariables}" var="mapEntity">
-                    ${mapEntity.key}
-                    ${mapEntity.value}
+                    [${mapEntity.key} : ${mapEntity.value}]、
                 </c:forEach>
             </td>
             <td><b title='流程版本号'>V: ${actTask.taskProcDefVersion}</b></td>

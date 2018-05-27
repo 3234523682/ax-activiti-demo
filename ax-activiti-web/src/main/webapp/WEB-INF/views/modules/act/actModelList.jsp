@@ -7,6 +7,10 @@
     <title>流程列表</title>
 </head>
 <body>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="${ctx}/workflow/model/list">流程列表</a></li>
+    <li><a href="${ctx}/workflow/model/create">新建模型</a></li>
+</ul>
 <form id="searchForm" action="${ctx}/workflow/model/list" method="post" class="breadcrumb form-search">
     <input id="pageNo" name="pageNum" type="hidden" value="1"/>
     <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>

@@ -25,4 +25,11 @@ public class ActHistoricFlowQuery implements Serializable {
      * 结束节点实例ID
      */
     private String endActId;
+
+    public ActHistoricFlowQuery() {
+    }
+
+    public ActHistoricFlowQuery(String procInsId) {
+        this.procInsId = procInsId;
+    }
 }

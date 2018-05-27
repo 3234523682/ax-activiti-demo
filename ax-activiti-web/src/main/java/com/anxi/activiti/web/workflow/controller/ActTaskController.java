@@ -1,10 +1,13 @@
 package com.anxi.activiti.web.workflow.controller;
 
+import com.anxi.activiti.service.api.ActIdentityService;
 import com.anxi.activiti.service.api.ActProcessService;
+import com.anxi.activiti.service.api.ActRepositoryService;
 import com.anxi.activiti.service.api.ActTaskService;
 import com.anxi.activiti.vo.ActHistoricActivityVO;
 import com.anxi.activiti.vo.ActHistoricFlowQuery;
 import com.anxi.activiti.vo.ActHistoricTaskVO;
+import com.anxi.activiti.vo.ActModelNodeInfoVo;
 import com.anxi.activiti.vo.ActProcessDefinitionQuery;
 import com.anxi.activiti.vo.ActProcessDefinitionVO;
 import com.anxi.activiti.vo.ActProcessStartDTO;
@@ -13,16 +16,20 @@ import com.anxi.activiti.vo.ActTaskCompleteDTO;
 import com.anxi.activiti.vo.ActTaskDeleteDTO;
 import com.anxi.activiti.vo.ActTaskPageQuery;
 import com.anxi.activiti.vo.ActTaskVO;
+import com.anxi.activiti.vo.ActUserQuery;
+import com.anxi.activiti.vo.ActUserVO;
 import com.anxi.activiti.web.conf.FormPostParam;
 import com.anxi.activiti.web.workflow.util.Page;
-import com.anxi.activiti.web.workflow.util.PageUtil;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,6 +44,12 @@ public class ActTaskController {
 
     @Resource
     private ActProcessService actProcessService;
+
+    @Resource
+    private ActIdentityService actIdentityService;
+
+    @Resource
+    private ActRepositoryService actRepositoryService;
 
     /**
      * 获取未签收任务列表
@@ -54,7 +67,11 @@ public class ActTaskController {
      * 获取已签收任务列表
      */
     @RequestMapping(value = "alreadyClaimTaskList")
-    public String alreadyClaimTaskList(@FormPostParam ActTaskPageQuery actTaskPageQuery, Model model) {
+    public String alreadyClaimTaskList(@FormPostParam ActTaskPageQuery actTaskPageQuery, HttpServletRequest request, Model model) {
+        ActUserVO actUser = (ActUserVO) request.getSession().getAttribute("actUser");
+        if (null != actUser) {
+            actTaskPageQuery.setUserId(actUser.getUserId());
+        }
         PageInfo<ActTaskVO> actTaskPageInfo = actTaskService.pageFindAlreadyClaimTask(actTaskPageQuery);
         Page<ActTaskVO> page = new Page<>(actTaskPageQuery.getPageNum(), actTaskPageQuery.getPageSize(), actTaskPageInfo.getTotal(), actTaskPageInfo.getList());
         model.addAttribute("queryParam", actTaskPageQuery);
@@ -80,7 +97,7 @@ public class ActTaskController {
     @RequestMapping(value = "histoicFlow")
     public String histoicFlow(ActHistoricFlowQuery actHistoricFlowQuery, Model model) {
         List<ActHistoricActivityVO> actHistoricActivities = actTaskService.historicFlowList(actHistoricFlowQuery);
-        model.addAttribute("page", actHistoricActivities);
+        model.addAttribute("histoicFlowList", actHistoricActivities);
         return "modules/act/actTaskHistoricFlow";
     }
 
@@ -99,18 +116,28 @@ public class ActTaskController {
     /**
      * 启动流程
      */
-    @RequestMapping(value = "start")
+    @RequestMapping(value = "start", method = RequestMethod.GET)
+    public String start(ActProcessStartDTO startParam, Model model) {
+        model.addAttribute("startParam", startParam);
+        model.addAttribute("actUsers", actIdentityService.queryAllActUser(new ActUserQuery()));
+        return "modules/act/actTaskStart";
+    }
+
+    /**
+     * 启动流程
+     */
     @ResponseBody
-    public String start(ActProcessStartDTO actProcessStartVo, Model model) {
-        actTaskService.startProcess(actProcessStartVo);
+    @RequestMapping(value = "start", method = RequestMethod.POST)
+    public String start(@FormPostParam ActProcessStartDTO actProcessStartDTO) throws IOException {
+        actTaskService.startProcess(actProcessStartDTO);
         return "true";//adminPath + "/act/task";
     }
 
     /**
      * 签收任务
      */
-    @RequestMapping(value = "claim")
     @ResponseBody
+    @RequestMapping(value = "claim")
     public String claim(ActTaskClaimDTO actTaskClaimVo) {
         actTaskService.claimTask(actTaskClaimVo);
         return "true";//adminPath + "/act/task";
@@ -119,9 +146,9 @@ public class ActTaskController {
     /**
      * 完成任务
      */
-    @RequestMapping(value = "complete")
     @ResponseBody
-    public String complete(ActTaskCompleteDTO actTaskCompleteVo) {
+    @RequestMapping(value = "complete")
+    public String complete(@FormPostParam ActTaskCompleteDTO actTaskCompleteVo) throws IOException {
         actTaskService.completeTask(actTaskCompleteVo);
         return "true";//adminPath + "/act/task";
     }
@@ -133,5 +160,14 @@ public class ActTaskController {
     public String deleteTask(ActTaskDeleteDTO actTaskDeleteVo) {
         actTaskService.deleteTask(actTaskDeleteVo);
         return "/act/task";
+    }
+
+    @RequestMapping(value = "actTaskHandle", method = RequestMethod.GET)
+    public String actTaskHandle(String taskId, Model model) {
+        ActTaskVO actTask = actTaskService.getTaskById(taskId);
+        List<ActModelNodeInfoVo> actModelNodes = actRepositoryService.getActModelNodes(actTask.getTaskProcDefId());
+        model.addAttribute("actTask", actTask);
+        model.addAttribute("actModelNodes", actModelNodes);
+        return "modules/act/actTaskHandle";
     }
 }

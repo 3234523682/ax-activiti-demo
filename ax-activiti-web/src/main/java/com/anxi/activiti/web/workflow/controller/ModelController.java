@@ -2,22 +2,14 @@ package com.anxi.activiti.web.workflow.controller;
 
 import com.anxi.activiti.service.api.ActRepositoryService;
 import com.anxi.activiti.vo.ActModelPageQuery;
+import com.anxi.activiti.vo.ActModelResourceDTO;
 import com.anxi.activiti.vo.ActModelVO;
 import com.anxi.activiti.vo.CreateModelDTO;
 import com.anxi.activiti.web.conf.FormPostParam;
 import com.anxi.activiti.web.workflow.util.Page;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.editor.language.json.converter.BpmnJsonConverter;
-import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +21,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collections;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * 流程模型控制器
@@ -64,7 +58,7 @@ public class ModelController {
      * 创建模型视图
      */
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    public String create(HttpServletRequest request, HttpServletResponse response) {
+    public String create() {
         return "/modules/act/actModelCreate";
     }
 
@@ -85,27 +79,10 @@ public class ModelController {
      * 查询模型图片
      */
     @RequestMapping(value = "showModelPicture")
-    public void showModelPicture(HttpServletResponse response, String modelId) throws Exception {
-        ActModelVO modelData = actRepositoryService.getModel(modelId);
-        ObjectNode modelNode = null;
-        try {
-            modelNode = (ObjectNode) new ObjectMapper().readTree(actRepositoryService.getModelEditorSource(modelData.getActModelId()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-        ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
-        InputStream inputStream = processDiagramGenerator.generateDiagram(model,
-                "png",
-                Collections.<String>emptyList(), Collections.<String>emptyList(),
-                "WenQuanYi Micro Hei", "WenQuanYi Micro Hei",
-                null, null, 1.0);
+    public void showModelPicture(HttpServletResponse response, String modelId) throws IOException {
+        ActModelResourceDTO modelBpmnPng = actRepositoryService.getModelBpmnPng(modelId);
         OutputStream out = response.getOutputStream();
-        for (int b = -1; (b = inputStream.read()) != -1; ) {
-            out.write(b);
-        }
-        out.close();
-        inputStream.close();
+        IOUtils.write(modelBpmnPng.getContentByte(), out);
     }
 
     /**
@@ -118,54 +95,28 @@ public class ModelController {
     }
 
     /**
-     * 导出model对象为指定类型
+     * 导出model定义 bar
      *
      * @param modelId 模型ID
-     * @param type    导出文件类型(bpmn\json)
      */
     @RequestMapping(value = "export")
-    public void export(@RequestParam("modelId") String modelId, @RequestParam(value = "type", defaultValue = "bpmn") String type, HttpServletResponse response) {
+    public void export(@RequestParam("modelId") String modelId, HttpServletResponse response) {
         try {
-            ActModelVO modelData = actRepositoryService.getModel(modelId);
-            BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-            byte[] modelEditorSource = actRepositoryService.getModelEditorSource(modelData.getActModelId());
-
-            JsonNode editorNode = new ObjectMapper().readTree(modelEditorSource);
-            BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
-
-            // 处理异常
-            if (bpmnModel.getMainProcess() == null) {
-                response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
-                response.getOutputStream().println("no main process, can't export for type: " + type);
-                response.flushBuffer();
-                return;
-            }
-
-            String filename = "";
-            byte[] exportBytes = null;
-
-            String mainProcessId = bpmnModel.getMainProcess().getId();
-
-            if (type.equals("bpmn")) {
-
-                BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
-                exportBytes = xmlConverter.convertToXML(bpmnModel);
-
-                filename = mainProcessId + ".bpmn20.xml";
-            } else if (type.equals("json")) {
-
-                exportBytes = modelEditorSource;
-                filename = mainProcessId + ".json";
-
-            }
-
-            ByteArrayInputStream in = new ByteArrayInputStream(exportBytes);
-            IOUtils.copy(in, response.getOutputStream());
-
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+            ActModelResourceDTO modelBpmnPng = actRepositoryService.getModelBpmnPng(modelId);
+            ActModelResourceDTO modelBpmnXML = actRepositoryService.getModelBpmnXML(modelId);
+            File tempFile = File.createTempFile(modelBpmnPng.getName(), ".bar");
+            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+            ZipOutputStream zipOut = new ZipOutputStream(fileOutputStream);
+            zipOut.putNextEntry(new ZipEntry(modelBpmnPng.getName() + modelBpmnPng.getSuffix()));
+            IOUtils.write(modelBpmnPng.getContentByte(), zipOut);
+            zipOut.putNextEntry(new ZipEntry(modelBpmnXML.getName() + modelBpmnXML.getSuffix()));
+            IOUtils.write(modelBpmnXML.getContentByte(), zipOut);
+            zipOut.close(); // 关闭输出流
+            response.setHeader("Content-Disposition", "attachment; filename=" + modelBpmnPng.getName() + ".bar");
+            IOUtils.copy(new FileInputStream(tempFile), response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
-            log.error("导出model的xml文件失败：modelId={}, type={}", modelId, type, e);
+            log.error("导出model定义bar文件失败：modelId={}", modelId, e);
         }
     }
 

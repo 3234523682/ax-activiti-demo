@@ -8,6 +8,7 @@
 <body>
 <ul class="nav nav-tabs">
     <li class="active"><a href="${ctx}/workflow/process/">流程管理</a></li>
+    <li><a href="${ctx}/workflow/process/deploy/">部署流程</a></li>
     <li><a href="${ctx}/workflow/process/running">运行中的流程</a></li>
 </ul>
 <sys:message content="${message}"/>
@@ -45,6 +46,7 @@
                 </c:if>
                 <a href='${ctx}/workflow/process/delete?deploymentId=${process.deploymentId}' onclick="return confirmx('确认要删除该流程吗？', this.href)">删除</a>
                 <a href='${ctx}/workflow/process/convert/toModel?procDefId=${process.procDefId}' onclick="return confirmx('确认要转换为模型吗？', this.href)">转换为模型</a>
+                <a href="${ctx}/workflow/task/start?procDefKey=${process.procDefKey}&category=${process.category}&procDefName=${process.procDefName}">开启任务</a>
             </td>
         </tr>
     </c:forEach>

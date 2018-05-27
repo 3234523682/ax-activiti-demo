@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="utf-8"  %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="utf-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp" %>
 <%@ taglib prefix="sitemesh" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <!DOCTYPE html>
@@ -55,7 +55,9 @@
 <body>
 <div class="parent" id="parent">
     <div class="top">
+        <span style="float: left">当前登陆用户：${null!=actUser?actUser.userName:''}</span>
         activiti demo
+        <span id="myModal" style="float: right;cursor:pointer;">设置登陆用户</span>
     </div>
     <div class="left">
         <%@include file="/WEB-INF/views/include/menuleft.jsp" %>
@@ -67,7 +69,17 @@
         <p>bottom</p>
     </div>
 </div>
+<script type="text/template" id="userIdSetBox">
+    <div id="userIdSetDiv" action="" disabled="disabled">
+        <br/>
+        <label>用户登录名：</label><input id="userId" type="text" name="userId"/>
+        <br/><br/>
+        <input style="float: right;" id="userIdSetSubmit" class="btn btn-primary" type="button" value="   保    存   "
+               onclick="userIdSetSubmitFun()"/>
+    </div>
+</script>
 <script>
+
     function page(pageNo, pageSize, param) {
         var form = $("#searchForm");
         var maxPageNo = $("#pageSelect").attr("max");
@@ -82,6 +94,38 @@
         $(form).find("#pageSize").val(pageSize);
         $(form).submit();
     }
+
+    function userIdSetSubmitFun() {
+        var userId = $("#userIdSetDiv").find("#userId").val();
+        $.post("${ctx}/workflow/identity/userIdSet", {userId: userId}, function (data) {
+            if (data === 'true') {
+                operationSucceedNotice('设置成功！！',function () {
+                    location.reload();
+                });
+            } else {
+                operationFailureNotice('设置失败，用户不存在！！');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        new jBox('Modal', {
+            attach: '#myModal',
+            blockScroll: false,
+            animation: 'zoomIn',
+            draggable: 'title',
+            closeButton: true,
+            overlay: false,
+            reposition: false,
+            repositionOnOpen: false,
+            title: '设置登陆用户',
+            closeOnClick: false,
+            content: $('#userIdSetBox').html()
+        });
+
+    });
+
 </script>
 </body>
 </html>

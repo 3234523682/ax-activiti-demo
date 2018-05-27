@@ -14,6 +14,10 @@
     <title>新建Act模型</title>
 </head>
 <body>
+<ul class="nav nav-tabs">
+    <li><a href="${ctx}/workflow/model/list">流程列表</a></li>
+    <li class="active"><a href="${ctx}/workflow/model/create">新建模型</a></li>
+</ul>
 <form id="inputForm" action="${ctx}/workflow/model/create" method="post" class="form-horizontal" target="_blank" accept-charset="utf-8">
     <div class="control-group">
         <label class="control-label">模型分类：</label>

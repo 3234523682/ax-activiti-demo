@@ -1,7 +1,10 @@
 package com.anxi.activiti.service.impl;
 
 import com.anxi.activiti.service.api.ActProcessService;
+import com.anxi.activiti.vo.ActModelNodeInfoVo;
+import com.anxi.activiti.vo.ActModelResourceDTO;
 import com.anxi.activiti.vo.SetProcessCategoryDTO;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.anxi.activiti.service.api.ActRepositoryService;
@@ -13,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
@@ -20,12 +24,19 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.image.ProcessDiagramGenerator;
+import org.activiti.image.impl.DefaultProcessDiagramGenerator;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -117,6 +128,46 @@ public class ActRepositoryServiceImpl implements ActRepositoryService {
     @Transactional
     public void deleteModel(String modelId) {
         repositoryService.deleteModel(modelId);
+    }
+
+    @Override
+    public ActModelResourceDTO getModelBpmnPng(String modelId) throws IOException {
+        ActModelVO modelData = this.getModel(modelId);
+        ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(this.getModelEditorSource(modelData.getActModelId()));
+        BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+        ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
+        InputStream inputStream = processDiagramGenerator.generateDiagram(model,
+                "png",
+                Collections.<String>emptyList(), Collections.<String>emptyList(),
+                "WenQuanYi Micro Hei", "WenQuanYi Micro Hei",
+                null, null, 1.0);
+        byte[] bytes = IOUtils.toByteArray(inputStream);
+        return new ActModelResourceDTO(modelData.getActModelKey(), ".png", bytes);
+    }
+
+    @Override
+    public ActModelResourceDTO getModelBpmnXML(String modelId) throws IOException {
+        ActModelVO modelData = this.getModel(modelId);
+        BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+        byte[] modelEditorSource = this.getModelEditorSource(modelData.getActModelId());
+        JsonNode editorNode = new ObjectMapper().readTree(modelEditorSource);
+        BpmnModel bpmnModel = jsonConverter.convertToBpmnModel(editorNode);
+        BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
+        byte[] exportBytes = xmlConverter.convertToXML(bpmnModel);
+        return new ActModelResourceDTO(modelData.getActModelKey(), ".bpmn20.xml", exportBytes);
+    }
+
+    @Override
+    public List<ActModelNodeInfoVo> getActModelNodes(String processDefinitionId) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        Collection<FlowElement> flowElements = bpmnModel.getMainProcess().getFlowElements();
+        List<ActModelNodeInfoVo> lists = new ArrayList<>(flowElements.size());
+        ActModelNodeInfoVo actModelNodeInfoVo;
+        for (FlowElement e : flowElements) {
+            actModelNodeInfoVo = new ActModelNodeInfoVo(e.getId(), e.getName(), e.getDocumentation());
+            lists.add(actModelNodeInfoVo);
+        }
+        return lists;
     }
 
     @Override

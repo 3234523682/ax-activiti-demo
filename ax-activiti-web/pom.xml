@@ -51,18 +51,6 @@
             <version>1.7</version>
         </dependency>
 
-
-        <!-- Activiti -->
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-engine</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-modeler</artifactId>
-        </dependency>
-
         <!--     &lt;!&ndash; 热部署 &ndash;&gt;
              <dependency>
                  <groupId>org.springframework.boot</groupId>
@@ -102,6 +90,12 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>sitemesh</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
         </dependency>
 
     </dependencies>

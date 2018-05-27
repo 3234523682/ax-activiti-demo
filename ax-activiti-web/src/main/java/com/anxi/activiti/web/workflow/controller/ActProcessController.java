@@ -3,9 +3,9 @@ package com.anxi.activiti.web.workflow.controller;
 import com.anxi.activiti.service.api.ActProcessService;
 import com.anxi.activiti.vo.ActProcessDefinitionQuery;
 import com.anxi.activiti.vo.ActProcessDefinitionVO;
+import com.anxi.activiti.vo.ActProcessDeployDTO;
 import com.anxi.activiti.vo.ActProcessInsVO;
 import com.anxi.activiti.vo.ActProcessInstanceQuery;
-import com.anxi.activiti.vo.ActUserVO;
 import com.anxi.activiti.vo.DeleteProcInsDTO;
 import com.anxi.activiti.vo.ProcessResourceReadDTO;
 import com.anxi.activiti.vo.SetProcessCategoryDTO;
@@ -13,14 +13,13 @@ import com.anxi.activiti.vo.SetProcessStateDTO;
 import com.anxi.activiti.web.conf.FormPostParam;
 import com.anxi.activiti.web.conf.UrlParam;
 import com.anxi.activiti.web.workflow.util.Page;
-import com.anxi.activiti.web.workflow.util.PageUtil;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +59,16 @@ public class ActProcessController {
         return "modules/act/actProcessRunningList";
     }
 
+    @RequestMapping(value = "/deploy", method = RequestMethod.POST)
+    public String deploy(String category, MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        ActProcessDeployDTO actProcessDeployDTO = new ActProcessDeployDTO();
+        actProcessDeployDTO.setCategory(category);
+        actProcessDeployDTO.setFileName(fileName);
+        actProcessDeployDTO.setFileContentBytes(file.getBytes());
+        actProcessService.processDeploy(actProcessDeployDTO);
+        return "redirect:/workflow/process/";
+    }
 
     /**
      * 设置流程分类
@@ -74,9 +83,17 @@ public class ActProcessController {
      * 挂起、激活流程实例
      */
     @RequestMapping(value = "update/{state}")
-    public String updateState(@PathVariable("state") boolean isActivate, String procDefId, RedirectAttributes redirectAttributes) {
+    public String updateState(@PathVariable("state") boolean isActivate, String procDefId) {
         actProcessService.setProcessState(new SetProcessStateDTO(procDefId, isActivate));
         return "redirect:/workflow/process/";
+    }
+
+    /**
+     * 部署流程
+     */
+    @RequestMapping(value = "/deploy", method = RequestMethod.GET)
+    public String deploy() {
+        return "modules/act/actProcessDeploy";
     }
 
     /**
@@ -112,7 +129,7 @@ public class ActProcessController {
      * @param reason    删除原因
      */
     @RequestMapping(value = "deleteProcIns")
-    public String deleteProcIns(String procInsId, String reason, RedirectAttributes redirectAttributes) {
+    public String deleteProcIns(String procInsId, String reason) {
         actProcessService.deleteProcIns(new DeleteProcInsDTO(procInsId, reason));
         return "redirect:/workflow/process/running";
     }

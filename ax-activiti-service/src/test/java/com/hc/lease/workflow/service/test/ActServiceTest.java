@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class ActServiceTest extends BaseJunit4Test {
     }
 
     @Test
-    public void actTaskTest() {
+    public void actTaskTest() throws IOException {
         ActProcessStartDTO actProcessStartVo = new ActProcessStartDTO("admin", "purchase_requisition", "act工作流流程测试");
         actTaskService.startProcess(actProcessStartVo);
     }
@@ -78,7 +79,7 @@ public class ActServiceTest extends BaseJunit4Test {
     }
 
     @Test
-    public void completeTask01() {
+    public void completeTask01() throws IOException {
         ActTaskPageQuery actTaskPageQuery = new ActTaskPageQuery(1, 10, "admin", "purchase_requisition");
         PageInfo<ActTaskVO> taskPageInfo = actTaskService.pageFindAwaitClaimTask(actTaskPageQuery);
         ActTaskVO task = taskPageInfo.getList().get(0);
@@ -89,7 +90,7 @@ public class ActServiceTest extends BaseJunit4Test {
     }
 
     @Test
-    public void completeTask02() {
+    public void completeTask02() throws IOException {
         ActTaskPageQuery actTaskPageQuery = new ActTaskPageQuery(1, 10, "Tom", "purchase_requisition");
         PageInfo<ActTaskVO> taskPageInfo = actTaskService.pageFindAwaitClaimTask(actTaskPageQuery);
         ActTaskVO task = taskPageInfo.getList().get(0);
@@ -100,7 +101,7 @@ public class ActServiceTest extends BaseJunit4Test {
     }
 
     @Test
-    public void completeTask03() {
+    public void completeTask03() throws IOException {
         ActTaskPageQuery actTaskPageQuery = new ActTaskPageQuery(1, 10, "admin", "purchase_requisition");
         PageInfo<ActTaskVO> taskPageInfo = actTaskService.pageFindAwaitClaimTask(actTaskPageQuery);
         ActTaskVO task = taskPageInfo.getList().get(0);
@@ -110,7 +111,7 @@ public class ActServiceTest extends BaseJunit4Test {
     }
 
     @Test
-    public void completeTask04() {
+    public void completeTask04() throws IOException {
         ActTaskPageQuery actTaskPageQuery = new ActTaskPageQuery(1, 10, "Tom", "purchase_requisition");
         PageInfo<ActTaskVO> taskPageInfo = actTaskService.pageFindAwaitClaimTask(actTaskPageQuery);
         ActTaskVO task = taskPageInfo.getList().get(0);

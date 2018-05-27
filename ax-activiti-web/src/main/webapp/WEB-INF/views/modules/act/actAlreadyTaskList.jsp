@@ -9,20 +9,38 @@
 
         });
 
+        function claim(taskId) {
+            if (!nowUserId) {
+                operationFailureNotice("请先登录！！");
+            } else {
+                $.get('${ctx}/workflow/task/claim', {taskId: taskId, userId: nowUserId}, function (data) {
+                    if (data == 'true') {
+                        operationSucceedNotice('签收任务成功！', function () {
+                            location.reload();
+                        });
+                    } else {
+                        operationFailureNotice('退签失败');
+                    }
+                });
+            }
+        }
     </script>
 </head>
 <body>
 <ul class="nav nav-tabs">
-    <li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>
+    <%--<li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>--%>
     <li class="active"><a href="${ctx}/workflow/task/alreadyClaimTaskList">待办任务列表</a></li>
     <li><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
-    <li><a href="${ctx}/workflow/task/process">新建任务</a></li>
+    <%--<li><a href="${ctx}/workflow/task/process">新建任务</a></li>--%>
 </ul>
-<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/awaitClaimTaskList" method="get" class="breadcrumb form-search">
-    <label>任务标题：</label><input type="text" name="taskProcessInstanceName" value="${queryParam.taskProcessInstanceName}"/>
+<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/alreadyClaimTaskList"
+           method="get" class="breadcrumb form-search">
+    <label>任务名称：</label><input type="text" name="taskProcessInstanceName"
+                               value="${queryParam.taskProcessInstanceName}"/>
     <label>事项：</label><input type="text" name="procDefName" value="${queryParam.procDefName}"/>
     <label>发起人：</label><input type="text" name="taskInitiator" value="${queryParam.taskInitiator}"/>
     <label>步骤：</label><input type="text" name="taskNodeName" value="${queryParam.taskNodeName}"/>
+    &nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 </form:form>
 <table id="contentTable" class="table table-striped table-bordered table-condensed">
     <thead>
@@ -48,19 +66,21 @@
             <td>${actTask.currentNodeName}</td>
             <td>
                 <c:forEach items="${actTask.processVariables}" var="mapEntity">
-                    ${mapEntity.key}
-                    ${mapEntity.value}
+                    [${mapEntity.key} : ${mapEntity.value}]、
                 </c:forEach>
             </td>
             <td><b title='流程版本号'>V: ${actTask.taskProcDefVersion}</b></td>
             <td><fmt:formatDate value="${actTask.createDate}" type="both"/></td>
             <td>
-                <a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
+                <c:if test="${not empty actTask.nodeAffiliationPerson}">
+                    <a href="${ctx}/workflow/task/actTaskHandle?taskId=${actTask.taskId}">任务办理</a>
+                </c:if>
+                <a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer/index.html?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
                 <c:if test="${empty actTask.taskExecutionId}">
                     <a href="${ctx}/workflow/task/deleteTask?taskId=${actTask.taskId}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
                 </c:if>
                 <c:if test="${empty actTask.nodeAffiliationPerson}">
-                    <a href="javascript:claim('${actTask.taskId}');">退签</a>
+                    <a href="javascript:claim('${actTask.taskId}');">签收任务</a>
                 </c:if>
             </td>
         </tr>

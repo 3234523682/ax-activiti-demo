@@ -20,6 +20,9 @@ public class ActTaskClaimDTO implements Serializable {
      */
     private String userId;
 
+    public ActTaskClaimDTO() {
+    }
+
     public ActTaskClaimDTO(String taskId, String userId) {
         this.taskId = taskId;
         this.userId = userId;

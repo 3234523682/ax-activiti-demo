@@ -19,7 +19,7 @@
         <li>
             <div class="link"><i class="fa fa-mobile"></i>任务管理<i class="fa fa-chevron-down"></i></div>
             <ul class="submenu">
-                <li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务</a></li>
+                <%--<li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务</a></li>--%>
                 <li><a href="${ctx}/workflow/task/alreadyClaimTaskList">待办任务</a></li>
                 <li><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
             </ul>

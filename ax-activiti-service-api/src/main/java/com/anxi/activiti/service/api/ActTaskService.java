@@ -11,6 +11,7 @@ import com.anxi.activiti.vo.ActTaskDeleteDTO;
 import com.anxi.activiti.vo.ActTaskPageQuery;
 import com.github.pagehelper.PageInfo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public interface ActTaskService {
     /**
      * 启动流程
      */
-    String startProcess(ActProcessStartDTO actProcessStartVo);
+    String startProcess(ActProcessStartDTO actProcessStartVo) throws IOException;
 
     /**
      * 获取任务
@@ -69,5 +70,5 @@ public interface ActTaskService {
     /**
      * 提交任务, 并保存意见
      */
-    void completeTask(ActTaskCompleteDTO actTaskCompleteVo);
+    void completeTask(ActTaskCompleteDTO actTaskCompleteVo) throws IOException;
 }

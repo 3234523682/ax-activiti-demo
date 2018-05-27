@@ -38,7 +38,7 @@ public class ActIdentityServiceImpl implements ActIdentityService {
     @Override
     public ActUserVO getActUserById(String userId) {
         User user = identityService.createUserQuery().userId(userId).singleResult();
-        return new ActUserVO(user.getId(), user.getFirstName(), user.getEmail());
+        return null != user ? new ActUserVO(user.getId(), user.getFirstName(), user.getEmail()) : null;
     }
 
     @Override

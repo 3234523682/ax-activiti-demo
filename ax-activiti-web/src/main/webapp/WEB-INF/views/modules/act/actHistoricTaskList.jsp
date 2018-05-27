@@ -13,30 +13,20 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-    <li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>
-    <li class="active"><a href="${ctx}/workflow/task/alreadyClaimTaskList">待办任务列表</a></li>
-    <li><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
-    <li><a href="${ctx}/workflow/task/process">新建任务</a></li>
+    <%--<li><a href="${ctx}/workflow/task/awaitClaimTaskList">待签任务列表</a></li>--%>
+    <li><a href="${ctx}/workflow/task/alreadyClaimTaskList">待办任务列表</a></li>
+    <li class="active"><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
+    <%--<li><a href="${ctx}/workflow/task/process">新建任务</a></li>--%>
 </ul>
-<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/awaitClaimTaskList" method="get" class="breadcrumb form-search">
+<form id="searchForm" action="${ctx}/workflow/task/awaitClaimTaskList" method="post" class="breadcrumb form-search">
     <div>
         <label>流程类型：&nbsp;</label>
-        <form:select path="procDefKey" class="input-medium">
-            <form:option value="" label="全部流程"/>
-        </form:select>
-        <label>创建时间：</label>
-        <input id="beginDate" name="beginDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-               style="width:163px;"
-               value="<fmt:formatDate value="${act.beginDate}" pattern="yyyy-MM-dd"/>"
-               onclick="WdatePicker({dateFmt:'yyyy-MM-dd'});"/>
-        　--　
-        <input id="endDate" name="endDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate"
-               style="width:163px;"
-               value="<fmt:formatDate value="${act.endDate}" pattern="yyyy-MM-dd"/>"
-               onclick="WdatePicker({dateFmt:'yyyy-MM-dd'});"/>
+        <select name="procDefKey" class="input-medium">
+            <option value="">全部流程</option>
+        </select>
         &nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
     </div>
-</form:form>
+</form>
 <table id="contentTable" class="table table-striped table-bordered table-condensed">
     <thead>
     <tr>
@@ -72,10 +62,8 @@
             <td><b title='流程版本号'>V: ${actTask.taskProcDefVersion}</b></td>
             <td><fmt:formatDate value="${actTask.createDate}" type="both"/></td>
             <td>
-                <a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
-                <c:if test="${empty actTask.nodeAffiliationPerson}">
-                    <a href="javascript:claim('${actTask.taskId}');">退签</a>
-                </c:if>
+                <a target="_blank"
+                   href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
                     <%--  <c:if test="${empty actTask.taskExecutionId}">
                         <a href="${ctx}/workflow/task/deleteTask?taskId=${actTask.taskId}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
                     </c:if>--%>

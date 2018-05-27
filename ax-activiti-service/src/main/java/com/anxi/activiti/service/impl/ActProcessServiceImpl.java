@@ -4,6 +4,7 @@ import com.anxi.activiti.constant.ActProcessResourceType;
 import com.anxi.activiti.service.api.ActProcessService;
 import com.anxi.activiti.vo.ActProcessDefinitionQuery;
 import com.anxi.activiti.vo.ActProcessDefinitionVO;
+import com.anxi.activiti.vo.ActProcessDeployDTO;
 import com.anxi.activiti.vo.ActProcessInsVO;
 import com.anxi.activiti.vo.ActProcessInstanceQuery;
 import com.anxi.activiti.vo.DeleteProcInsDTO;
@@ -18,6 +19,7 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -27,6 +29,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +37,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by LJ on 2018/3/26
@@ -124,6 +129,45 @@ public class ActProcessServiceImpl implements ActProcessService {
             repositoryService.suspendProcessDefinitionById(procDefId, true, null);
             log.info("已挂起ID为[" + procDefId + "]的流程定义。");
         }
+    }
+
+    @Override
+    @Transactional
+    public boolean processDeploy(ActProcessDeployDTO actProcessDeployDTO) {
+        try {
+            String fileName = actProcessDeployDTO.getFileName();
+            String extension = FilenameUtils.getExtension(fileName);
+            String category = actProcessDeployDTO.getCategory();
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(actProcessDeployDTO.getFileContentBytes());
+            Deployment deployment;
+            if (extension.equals("zip") || extension.equals("bar")) {
+                ZipInputStream zip = new ZipInputStream(byteArrayInputStream);
+                deployment = repositoryService.createDeployment().addZipInputStream(zip).deploy();
+            } else if (fileName.contains("bpmn20.xml")) {
+                deployment = repositoryService.createDeployment().addInputStream(fileName, byteArrayInputStream).deploy();
+            } else if (extension.equals("bpmn")) { // bpmn扩展名特殊处理，转换为bpmn20.xml
+                String baseName = FilenameUtils.getBaseName(fileName);
+                deployment = repositoryService.createDeployment().addInputStream(baseName + ".bpmn20.xml", byteArrayInputStream).deploy();
+            } else {
+                log.error("不支持的文件类型：{}", extension);
+                return false;
+            }
+            List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).list();
+            // 设置流程分类
+            for (ProcessDefinition processDefinition : list) {
+                repositoryService.setProcessDefinitionCategory(processDefinition.getId(), category);
+                log.info("部署成功，流程ID=" + processDefinition.getId());
+            }
+
+            if (list.size() == 0) {
+                log.error("部署失败，没有流程。");
+                return false;
+            }
+
+        } catch (Exception e) {
+            throw new ActivitiException("部署失败！", e);
+        }
+        return true;
     }
 
     @Override

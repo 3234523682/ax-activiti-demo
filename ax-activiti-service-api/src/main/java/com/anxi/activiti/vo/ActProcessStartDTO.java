@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ActProcessStartDTO implements Serializable {
 
     /**
-     * 启动流程用户ID
+     * 启动流程用户ID（必须）
      */
     private String processStartUserId;
 
@@ -21,14 +21,29 @@ public class ActProcessStartDTO implements Serializable {
     private String procDefId;
 
     /**
-     * 流程标识
+     * 流程标识（必须）
      */
     private String procDefKey;
 
     /**
-     * 流程标题
+     * 流程标题（必须）
      */
     private String processTitle;
+
+    /**
+     * 流程参数json字符串
+     */
+    private String flowParamJsonStr;
+
+    /**
+     * 流程分类
+     */
+    private String category;
+
+    /**
+     * 流程名称
+     */
+    private String procDefName;
 
     public ActProcessStartDTO() {
     }

@@ -22,7 +22,7 @@ public class ActTaskCompleteDTO implements Serializable {
     private String procInsId;
 
     /**
-     * 意见类型（com.hc.lease.workflow.constant.ActCommentType）
+     * 意见类型（com.anxi.activiti.constant.ActAuditType）
      */
     private String commentType;
 
@@ -32,9 +32,17 @@ public class ActTaskCompleteDTO implements Serializable {
     private String comment;
 
     /**
+     * 流程参数json字符串
+     */
+    private String flowParamJsonStr;
+
+    /**
      * 任务变量
      */
     private Map<String, Object> vars;
+
+    public ActTaskCompleteDTO() {
+    }
 
     public ActTaskCompleteDTO(String taskId, String procInsId, String commentType, String comment, Map<String, Object> vars) {
         this.taskId = taskId;
