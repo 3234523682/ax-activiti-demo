@@ -9,7 +9,7 @@
 <ul class="nav nav-tabs">
     <li><a href="${ctx}/workflow/process/">流程管理</a></li>
     <li><a href="${ctx}/workflow/process/deploy/">部署流程</a></li>
-    <li class="active"><a href="${ctx}/workflow/process/running/">运行中的流程</a></li>
+    <li class="active"><a href="${ctx}/workflow/process/running">运行中的流程</a></li>
 </ul>
 <form id="searchForm" action="${ctx}/workflow/process/running/" method="post" class="breadcrumb form-search">
     <label>流程实例ID：</label><input type="text" id="procInsId" name="procInsId" value="${procInsId}" class="input-medium"/>
@@ -22,7 +22,9 @@
         <th>执行ID</th>
         <th>流程实例ID</th>
         <th>流程实例名称</th>
-        <th>流程定义ID</th>
+        <th>流程定义标识</th>
+        <th>流程定义名称</th>
+        <th>流程定义版本</th>
         <th>当前环节标识</th>
         <th>当前环节名称</th>
         <th>当前环节受理人</th>
@@ -36,14 +38,15 @@
             <td>${procIns.id}</td>
             <td>${procIns.procInsId}</td>
             <td>${procIns.procInsName}</td>
-            <td>${procIns.procDefId}</td>
+            <td>${procIns.procDefKey}</td>
+            <td>${procIns.procDefName}</td>
+            <td>${procIns.procDefVersion}</td>
             <td>${procIns.activityId}</td>
             <td>${procIns.activityName}</td>
             <td>${procIns.activityConductor}</td>
             <td>${procIns.suspended}</td>
             <td>
-                <a href="${ctx}/workflow/process/deleteProcIns?procInsId=${procIns.id}&reason="
-                   onclick="return promptx('删除流程','删除原因',this.href);">删除流程</a>
+                <a href="${ctx}/workflow/process/deleteProcIns?procInsId=${procIns.id}&reason=" onclick="return promptx('删除流程','删除原因',this.href);">删除流程</a>
             </td>
         </tr>
     </c:forEach>

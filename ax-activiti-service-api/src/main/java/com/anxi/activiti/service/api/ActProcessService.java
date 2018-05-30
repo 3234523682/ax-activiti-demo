@@ -28,6 +28,8 @@ public interface ActProcessService {
      */
     PageInfo<ActProcessInsVO> processInstanceList(ActProcessInstanceQuery actProcessInstanceQuery);
 
+    ActProcessDefinitionVO getProcessDefinitionById(String procDefId);
+
     /**
      * 设置流程分类
      */

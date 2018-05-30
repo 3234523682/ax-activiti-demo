@@ -50,7 +50,7 @@
             <td>${actTask.taskName}</td>
             <td>${actTask.taskInitiator}</td>
             <td>${actTask.currentNodeName}</td>
-            <td>${actTask.taskEndTime}</td>
+            <td><fmt:formatDate value="${actTask.taskEndTime}" type="both"/></td>
             <td>
                 <c:if test="${actTask.taskEnd}">
                     已结束
@@ -62,8 +62,7 @@
             <td><b title='流程版本号'>V: ${actTask.taskProcDefVersion}</b></td>
             <td><fmt:formatDate value="${actTask.createDate}" type="both"/></td>
             <td>
-                <a target="_blank"
-                   href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
+                <a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer/index.html?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
                     <%--  <c:if test="${empty actTask.taskExecutionId}">
                         <a href="${ctx}/workflow/task/deleteTask?taskId=${actTask.taskId}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
                     </c:if>--%>

@@ -33,6 +33,11 @@ public class ActProcessDefinitionVO implements Serializable {
     private String procDefName;
 
     /**
+     * 流程定义描述
+     */
+    private String procDefDescription;
+
+    /**
      * 流程定义版本
      */
     private Integer procDefVersion;

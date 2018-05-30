@@ -1,4 +1,4 @@
-package com.hc.lease.workflow.service.test;
+package com.anxi.activiti.service;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

@@ -20,6 +20,10 @@ var KISBPM = KISBPM || {};
 
 KISBPM.URL = {
 
+    getProcDef: function(procDefId) {
+        return ACTIVITI.CONFIG.contextRoot + '/procDef/' + procDefId + '/json';
+    },
+
     getModel: function(modelId) {
         return ACTIVITI.CONFIG.contextRoot + '/model/' + modelId + '/json';
     },

@@ -106,6 +106,19 @@ activitiModeler
                 });
             }
 
+            function fetchProcDef(procDefId) {
+
+                var procDefUrl = KISBPM.URL.getProcDef(procDefId);
+
+                $http({method: 'GET', url: procDefUrl}).success(function (data, status, headers, config) {
+                    $rootScope.editor = new ORYX.Editor(data);
+                    $rootScope.modelData = angular.fromJson(data);
+                    $rootScope.editorFactory.resolve();
+                }).error(function (data, status, headers, config) {
+                    console.log('Error loading model with id ' + modelId + ' ' + data);
+                });
+            }
+
 
             function initScrollHandling() {
                 var canvasSection = jQuery('#canvasSection');
@@ -178,7 +191,15 @@ activitiModeler
                     ORYX._loadPlugins();
 
                     var modelId = EDITOR.UTIL.getParameterByName('modelId');
-                    fetchModel(modelId);
+                    if (modelId) {
+                        fetchModel(modelId);
+                    } else {
+                        var procDefId = EDITOR.UTIL.getParameterByName('procDefId');
+                        fetchProcDef(procDefId);
+                        //jQuery("#paletteHelpWrapper").remove();
+                        jQuery("#editor-header").find(".btn-group").hide();
+                    }
+
 
                     $rootScope.window = {};
                     var updateWindowSize = function () {

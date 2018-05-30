@@ -17,6 +17,7 @@
     <dubbo:reference interface="com.anxi.activiti.service.api.ActRepositoryService" id="actRepositoryService" timeout="1200000" />
     <dubbo:reference interface="com.anxi.activiti.service.api.ActProcessService" id="actProcessService" timeout="1200000" />
     <dubbo:reference interface="com.anxi.activiti.service.api.ActTaskService" id="actTaskService" timeout="1200000" />
+    <dubbo:reference interface="com.anxi.activiti.service.api.ActCustomByteArrayService" id="actCustomByteArrayService" timeout="1200000" />
 
     <!--act rest Resource -->
     <dubbo:reference interface="com.anxi.activiti.act.rest.editor.model.ActModelSaveRestResource" id="actModelSaveRestResource" timeout="1200000" />

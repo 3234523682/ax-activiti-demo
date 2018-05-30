@@ -23,6 +23,11 @@ public class ActProcessDefinitionQuery extends CommonQuery implements Serializab
     private String procDefName;
 
     /**
+     * 流程定义版本
+     */
+    private Integer procDefVersion;
+
+    /**
      * act 流程分类
      */
     private String category;

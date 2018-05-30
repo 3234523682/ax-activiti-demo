@@ -138,4 +138,11 @@ public class ActIdentityController {
         return "true";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/userIdEmpty")
+    public String userIdEmpty(HttpServletRequest request) {
+        request.getSession().removeAttribute("actUser");
+        return "true";
+    }
+
 }

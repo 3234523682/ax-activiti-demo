@@ -63,8 +63,9 @@ public class ActHistoricTaskVO extends ActTaskVO implements Serializable {
         super.setCreateDate(actTask.getCreateDate());
         super.setTaskInitiator(actTask.getTaskInitiator());
         super.setTaskProcDefId(actTask.getTaskProcDefId());
-        super.setTaskProcInsId(actTask.getTaskProcDefId());
+        super.setTaskProcInsId(actTask.getTaskProcInsId());
         super.setProcessVariables(actTask.getProcessVariables());
+        super.setTaskProcDefVersion(actTask.getTaskProcDefVersion());
     }
 
 }

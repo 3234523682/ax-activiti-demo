@@ -55,9 +55,14 @@
 <body>
 <div class="parent" id="parent">
     <div class="top">
-        <span style="float: left">当前登陆用户：${null!=actUser?actUser.userName:''}</span>
+        <span style="float: left">当前登陆用户：
+            <c:if test="${null != actUser.userName}">
+                ${actUser.userName},
+                <span id="userOutSpan" style="cursor:pointer;font-size: 15px;" onclick="userIdEmptyFun()">退出登录</span>
+            </c:if>
+        </span>
         activiti demo
-        <span id="myModal" style="float: right;cursor:pointer;">设置登陆用户</span>
+        <span id="setUserSpan" style="float: right;cursor:pointer;">设置登陆用户</span>
     </div>
     <div class="left">
         <%@include file="/WEB-INF/views/include/menuleft.jsp" %>
@@ -99,7 +104,7 @@
         var userId = $("#userIdSetDiv").find("#userId").val();
         $.post("${ctx}/workflow/identity/userIdSet", {userId: userId}, function (data) {
             if (data === 'true') {
-                operationSucceedNotice('设置成功！！',function () {
+                operationSucceedNotice('设置成功！！', function () {
                     location.reload();
                 });
             } else {
@@ -108,10 +113,20 @@
         });
     }
 
+    function userIdEmptyFun() {
+        $.post("${ctx}/workflow/identity/userIdEmpty", function (data) {
+            if (data === 'true') {
+                operationSucceedNotice('设置成功！！', function () {
+                    location.reload();
+                });
+            }
+        });
+    }
+
     $(document).ready(function () {
 
         new jBox('Modal', {
-            attach: '#myModal',
+            attach: '#setUserSpan',
             blockScroll: false,
             animation: 'zoomIn',
             draggable: 'title',

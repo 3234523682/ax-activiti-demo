@@ -2,6 +2,7 @@ package com.anxi.activiti.web.workflow.act.rest.servlet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.io.IOException;
 @Slf4j
 public abstract class ActRestSupport {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper = new ObjectMapper();
 
     protected JsonNode readTree(String cont) {
         try {

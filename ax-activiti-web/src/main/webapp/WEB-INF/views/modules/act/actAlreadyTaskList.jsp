@@ -33,10 +33,8 @@
     <li><a href="${ctx}/workflow/task/historicTaskList">已办任务</a></li>
     <%--<li><a href="${ctx}/workflow/task/process">新建任务</a></li>--%>
 </ul>
-<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/alreadyClaimTaskList"
-           method="get" class="breadcrumb form-search">
-    <label>任务名称：</label><input type="text" name="taskProcessInstanceName"
-                               value="${queryParam.taskProcessInstanceName}"/>
+<form:form id="searchForm" modelAttribute="actTaskPageQuery" action="${ctx}/workflow/task/alreadyClaimTaskList" method="get" class="breadcrumb form-search">
+    <label>任务名称：</label><input type="text" name="taskProcessInstanceName" value="${queryParam.taskProcessInstanceName}"/>
     <label>事项：</label><input type="text" name="procDefName" value="${queryParam.procDefName}"/>
     <label>发起人：</label><input type="text" name="taskInitiator" value="${queryParam.taskInitiator}"/>
     <label>步骤：</label><input type="text" name="taskNodeName" value="${queryParam.taskNodeName}"/>
@@ -72,15 +70,16 @@
             <td><b title='流程版本号'>V: ${actTask.taskProcDefVersion}</b></td>
             <td><fmt:formatDate value="${actTask.createDate}" type="both"/></td>
             <td>
+                <c:if test="${empty actTask.nodeAffiliationPerson}">
+                    <a href="javascript:claim('${actTask.taskId}');">签收任务</a>
+                </c:if>
                 <c:if test="${not empty actTask.nodeAffiliationPerson}">
                     <a href="${ctx}/workflow/task/actTaskHandle?taskId=${actTask.taskId}">任务办理</a>
                 </c:if>
                 <a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer/index.html?processDefinitionId=${actTask.taskProcDefId}&processInstanceId=${actTask.taskProcInsId}">进度</a>
+                <a href="${ctx}/act/process-editor/modeler.jsp?procDefId=${actTask.taskProcDefId}" target="_blank">模型查看</a>
                 <c:if test="${empty actTask.taskExecutionId}">
                     <a href="${ctx}/workflow/task/deleteTask?taskId=${actTask.taskId}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
-                </c:if>
-                <c:if test="${empty actTask.nodeAffiliationPerson}">
-                    <a href="javascript:claim('${actTask.taskId}');">签收任务</a>
                 </c:if>
             </td>
         </tr>

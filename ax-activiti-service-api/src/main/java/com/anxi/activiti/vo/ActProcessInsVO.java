@@ -32,6 +32,21 @@ public class ActProcessInsVO implements Serializable {
     private String procDefId;
 
     /**
+     * 流程定义标识
+     */
+    private String procDefKey;
+
+    /**
+     * 流程定义名称
+     */
+    private String procDefName;
+
+    /**
+     * 流程定义版本
+     */
+    private Integer procDefVersion;
+
+    /**
      * 当前环节标识
      */
     private String activityId;

@@ -64,7 +64,13 @@ public class ActProcessServiceImpl implements ActProcessService {
 
     @Override
     public PageInfo<ActProcessDefinitionVO> processDefinitionQuery(ActProcessDefinitionQuery queryParam) {
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery().latestVersion().orderByProcessDefinitionKey().asc();
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        Integer procDefVersion = queryParam.getProcDefVersion();
+        if (null != procDefVersion && procDefVersion > 0) {
+            processDefinitionQuery.processDefinitionVersion(procDefVersion);
+        } else {
+            processDefinitionQuery.latestVersion().orderByProcessDefinitionKey().asc();
+        }
         this.processDefinitionQuerySet(processDefinitionQuery, queryParam);
         PageInfo<ActProcessDefinitionVO> actProcessPageInfo = new PageInfo<>();
         actProcessPageInfo.setTotal(processDefinitionQuery.count());
@@ -75,16 +81,8 @@ public class ActProcessServiceImpl implements ActProcessService {
         for (ProcessDefinition processDefinition : processDefinitionList) {
             deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
             actProcess = new ActProcessDefinitionVO();
-            actProcess.setProcDefId(processDefinition.getId());
-            actProcess.setProcDefKey(processDefinition.getKey());
-            actProcess.setCategory(processDefinition.getCategory());
-            actProcess.setProcDefName(processDefinition.getName());
-            actProcess.setProcDefVersion(processDefinition.getVersion());
-            actProcess.setDeploymentId(processDefinition.getDeploymentId());
             actProcess.setProcDefDeployTime(deployment.getDeploymentTime());
-            actProcess.setSuspended(processDefinition.isSuspended());
-            actProcess.setProcDefResourceXml(processDefinition.getResourceName());
-            actProcess.setProcDefResourceImg(processDefinition.getDiagramResourceName());
+            this.actProcessDefinitionVOAttributeSet(actProcess, processDefinition);
             list.add(actProcess);
         }
         actProcessPageInfo.setList(list);
@@ -97,12 +95,13 @@ public class ActProcessServiceImpl implements ActProcessService {
         this.processInstanceQuerySet(processInstanceQuery, queryParam);
         PageInfo<ActProcessInsVO> actProcessInstancePageInfo = new PageInfo<>();
         actProcessInstancePageInfo.setTotal(processInstanceQuery.count());
-        List<ProcessInstance> processInstances = processInstanceQuery.listPage(queryParam.getPageNum() * queryParam.getPageSize(), queryParam.getPageSize());
+        List<ProcessInstance> processInstances = processInstanceQuery.listPage((queryParam.getPageNum() - 1) * queryParam.getPageSize(), queryParam.getPageSize());
         List<ActProcessInsVO> list = new ArrayList<>(processInstances.size());
         ActProcessInsVO actProcessIns;
         Task task;
         for (ProcessInstance instance : processInstances) {
-            actProcessIns = new ActProcessInsVO(instance.getId(), instance.getProcessInstanceId(), instance.getName(), instance.getProcessDefinitionId(), instance.getActivityId(), instance.isSuspended());
+            actProcessIns = new ActProcessInsVO();
+            this.actProcessInsVOAttributeSet(actProcessIns, instance);
             task = taskService.createTaskQuery().processInstanceId(instance.getProcessInstanceId()).singleResult();
             actProcessIns.setActivityName(task.getName());
             actProcessIns.setActivityConductor(task.getAssignee());
@@ -110,6 +109,14 @@ public class ActProcessServiceImpl implements ActProcessService {
         }
         actProcessInstancePageInfo.setList(list);
         return actProcessInstancePageInfo;
+    }
+
+    @Override
+    public ActProcessDefinitionVO getProcessDefinitionById(String procDefId) {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId).singleResult();
+        ActProcessDefinitionVO actProcessDefinitionVO = new ActProcessDefinitionVO();
+        this.actProcessDefinitionVOAttributeSet(actProcessDefinitionVO, processDefinition);
+        return actProcessDefinitionVO;
     }
 
     @Override
@@ -259,6 +266,31 @@ public class ActProcessServiceImpl implements ActProcessService {
         if (StringUtils.isNotBlank(queryParam.getProcDefKey())) {
             processInstanceQuery.processDefinitionKey(queryParam.getProcDefKey());
         }
+    }
+
+    private void actProcessDefinitionVOAttributeSet(ActProcessDefinitionVO actProcess, ProcessDefinition processDefinition) {
+        actProcess.setProcDefId(processDefinition.getId());
+        actProcess.setProcDefKey(processDefinition.getKey());
+        actProcess.setCategory(processDefinition.getCategory());
+        actProcess.setProcDefName(processDefinition.getName());
+        actProcess.setProcDefDescription(processDefinition.getDescription());
+        actProcess.setProcDefVersion(processDefinition.getVersion());
+        actProcess.setDeploymentId(processDefinition.getDeploymentId());
+        actProcess.setSuspended(processDefinition.isSuspended());
+        actProcess.setProcDefResourceXml(processDefinition.getResourceName());
+        actProcess.setProcDefResourceImg(processDefinition.getDiagramResourceName());
+    }
+
+    private void actProcessInsVOAttributeSet(ActProcessInsVO actProcessIns, ProcessInstance instance) {
+        actProcessIns.setId(instance.getId());
+        actProcessIns.setProcInsId(instance.getProcessInstanceId());
+        actProcessIns.setProcInsName(instance.getName());
+        actProcessIns.setProcDefId(instance.getProcessDefinitionId());
+        actProcessIns.setProcDefKey(instance.getProcessDefinitionKey());
+        actProcessIns.setProcDefName(instance.getProcessDefinitionName());
+        actProcessIns.setProcDefVersion(instance.getProcessDefinitionVersion());
+        actProcessIns.setActivityId(instance.getActivityId());
+        actProcessIns.setSuspended(instance.isSuspended());
     }
 
 }

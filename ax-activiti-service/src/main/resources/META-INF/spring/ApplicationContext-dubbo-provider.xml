@@ -21,21 +21,21 @@
 
 	<!-- 声明需要暴露的服务接口 -->
 
-
-	<!-- 声明需要暴露的服务接口 -->
-	<dubbo:service interface="com.anxi.activiti.service.api.ActIdentityService" ref="actIdentityService" timeout="1200000" accesslog="true" />
-	<dubbo:service interface="com.anxi.activiti.service.api.ActRepositoryService" ref="actRepositoryService" timeout="1200000" accesslog="true" />
-	<dubbo:service interface="com.anxi.activiti.service.api.ActProcessService" ref="actProcessService" timeout="1200000" accesslog="true" />
-	<dubbo:service interface="com.anxi.activiti.service.api.ActTaskService" ref="actTaskService" timeout="1200000" accesslog="true" />
-
-	<dubbo:service interface="org.activiti.engine.RepositoryService" ref="repositoryService" timeout="1200000" accesslog="true" />
+	<!--	<dubbo:service interface="org.activiti.engine.RepositoryService" ref="repositoryService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.RepositoryService" ref="repositoryService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.RuntimeService" ref="runtimeService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.FormService" ref="formService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.IdentityService" ref="identityService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.TaskService" ref="taskService" timeout="1200000" accesslog="true" />
 	<dubbo:service interface="org.activiti.engine.HistoryService" ref="historyService" timeout="1200000" accesslog="true" />
-	<dubbo:service interface="org.activiti.engine.ManagementService" ref="managementService" timeout="1200000" accesslog="true" />
+	<dubbo:service interface="org.activiti.engine.ManagementService" ref="managementService" timeout="1200000" accesslog="true" />-->
+
+	<!-- 声明需要暴露的服务接口 -->
+	<dubbo:service interface="com.anxi.activiti.service.api.ActIdentityService" ref="actIdentityService" timeout="1200000" accesslog="true" />
+	<dubbo:service interface="com.anxi.activiti.service.api.ActRepositoryService" ref="actRepositoryService" timeout="1200000" accesslog="true" />
+	<dubbo:service interface="com.anxi.activiti.service.api.ActProcessService" ref="actProcessService" timeout="1200000" accesslog="true" />
+	<dubbo:service interface="com.anxi.activiti.service.api.ActTaskService" ref="actTaskService" timeout="1200000" accesslog="true" />
+	<dubbo:service interface="com.anxi.activiti.service.api.ActCustomByteArrayService" ref="actCustomByteArrayService" timeout="1200000" accesslog="true" />
 
 	<!--act rest Resource -->
 	<dubbo:service interface="com.anxi.activiti.act.rest.editor.model.ActModelSaveRestResource" ref="actModelSaveRestResource" timeout="1200000" accesslog="true" />

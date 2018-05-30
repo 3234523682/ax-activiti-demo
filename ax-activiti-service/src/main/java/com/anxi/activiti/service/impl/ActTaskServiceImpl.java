@@ -195,9 +195,10 @@ public class ActTaskServiceImpl implements ActTaskService {
         String processTitle = actProcessStartVo.getProcessTitle();
         Map<String, Object> vars = new HashMap<>();
         String flowParamJsonStr = actProcessStartVo.getFlowParamJsonStr();
-        if(!StringUtils.isEmpty(flowParamJsonStr)){
+        if (!StringUtils.isEmpty(flowParamJsonStr)) {
             ObjectMapper mapper = new ObjectMapper();
-            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String,Object>>(){});
+            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String, Object>>() {
+            });
         }
 
         // 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
@@ -248,9 +249,10 @@ public class ActTaskServiceImpl implements ActTaskService {
         String comment = actTaskCompleteVo.getComment();
         String flowParamJsonStr = actTaskCompleteVo.getFlowParamJsonStr();
         Map<String, Object> vars = new HashMap<>();
-        if(!StringUtils.isEmpty(flowParamJsonStr)){
+        if (!StringUtils.isEmpty(flowParamJsonStr)) {
             ObjectMapper mapper = new ObjectMapper();
-            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String,Object>>(){});
+            vars = mapper.readValue(flowParamJsonStr, new TypeReference<HashMap<String, Object>>() {
+            });
         }
         // 添加意见
         if (StringUtils.isNotBlank(procInsId) && StringUtils.isNotBlank(commentType) && StringUtils.isNotBlank(comment)) {
@@ -260,7 +262,7 @@ public class ActTaskServiceImpl implements ActTaskService {
             taskService.addComment(taskId, procInsId, comment);
         }
         // 提交任务
-        taskService.complete(taskId, vars);
+        taskService.complete(taskId, vars, true);
     }
 
     /**
@@ -331,10 +333,10 @@ public class ActTaskServiceImpl implements ActTaskService {
 
     private ActTaskVO actTaskGenerate(TaskInfo task, HistoricProcessInstance hi) {
         ActTaskVO actTask = new ActTaskVO(task.getId(), task.getDescription(), task.getName(), task.getAssignee(), task.getCreateTime(), task.getProcessDefinitionId(), task.getProcessInstanceId(), task.getProcessVariables());
-        List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(task.getId());
+      /*  List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(task.getId());
         if (null != identityLinksForTask && identityLinksForTask.size() > 0) {
             actTask.setNodeAffiliationGroup(identityLinksForTask.get(0).getGroupId());
-        }
+        }*/
         actTask.setTaskExecutionId(task.getExecutionId());
         actTask.setTaskDefinitionKey(task.getTaskDefinitionKey());
         actTask.setTaskProcessName(hi.getProcessDefinitionName());

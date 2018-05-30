@@ -39,10 +39,10 @@ public class ActProcessController {
      * 流程定义列表
      */
     @RequestMapping(value = {"list", ""})
-    public String processList(@FormPostParam ActProcessDefinitionQuery actProcessDefinitionQuery, Model model) {
-        PageInfo<ActProcessDefinitionVO> actProcessPageInfo = actProcessService.processDefinitionQuery(actProcessDefinitionQuery);
-        Page<ActProcessDefinitionVO> page = new Page<>(actProcessDefinitionQuery.getPageNum(), actProcessDefinitionQuery.getPageSize(), actProcessPageInfo.getTotal(), actProcessPageInfo.getList());
-        model.addAttribute("queryParam", actProcessDefinitionQuery);
+    public String processList(@FormPostParam ActProcessDefinitionQuery queryParam, Model model) {
+        PageInfo<ActProcessDefinitionVO> actProcessPageInfo = actProcessService.processDefinitionQuery(queryParam);
+        Page<ActProcessDefinitionVO> page = new Page<>(queryParam.getPageNum(), queryParam.getPageSize(), actProcessPageInfo.getTotal(), actProcessPageInfo.getList());
+        model.addAttribute("queryParam", queryParam);
         model.addAttribute("page", page);
         return "modules/act/actProcessList";
     }
