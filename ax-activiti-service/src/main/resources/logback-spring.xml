@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!--日志文件名称-->
+    <springProperty name="LOG_NAME" scope="context" source="spring.application.name"/>
+
+    <!--日志文件根目录-->
+    <springProperty name="LOG_HOME" scope="context" source="log.home" defaultValue="..\logs\${LOG_NAME}"/>
+
+    <!--日志文件归档目录-->
+    <property name="LOG_FILE_PATH" value="${LOG_HOME}/%d{yyyy-MM, aux}"/>
+
+    <!--日志输出字符集-->
+    <property name="LOG_CHARSET" value="UTF-8"/>
+
+    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+    <!--控制台日志输出格式-->
+    <property name="STDOUT_LOG_PATTERN" value="%blue(%d) |  %highlight(%-5level) | -- %boldGreen([%-30.30thread]) %red(%-40.40logger{5}：) %msg%n"/>
+
+    <!--文件日志输出格式-->
+    <property name="FILE_LOG_PATTERN" value="%d | %-5level | -- [%thread] %logger{5}： %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${STDOUT_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成主日志文件-->
+    <appender name="MAIN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}\main.${LOG_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${LOG_FILE_PATH}\main.${LOG_NAME}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+        </rollingPolicy>
+        <!--输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成日志文件【ERROR】级别 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}\error.${LOG_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${LOG_FILE_PATH}\error.${LOG_NAME}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+        </rollingPolicy>
+        <!--输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+        <!--过滤输出级别 error -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="com.anxi.activiti" level="DEBUG"/>
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="MAIN_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+</configuration>
