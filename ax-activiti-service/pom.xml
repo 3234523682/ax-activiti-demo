@@ -121,6 +121,11 @@
         </dependency>
 
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
         </dependency>
@@ -161,7 +166,6 @@
             <groupId>org.activiti</groupId>
             <artifactId>activiti-diagram-rest</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>javax.servlet</groupId>
