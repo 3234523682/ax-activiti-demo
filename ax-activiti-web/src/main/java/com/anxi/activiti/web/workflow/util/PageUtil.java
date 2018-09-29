@@ -16,8 +16,8 @@ public class PageUtil {
         // 前后显示页面长度
         int slider = 1;
         int pageNo = pageInfo.getPageNum();
-        int first = pageInfo.getFirstPage();
-        int last = pageInfo.getLastPage();
+        int first = pageInfo.getNavigateFirstPage();
+        int last = pageInfo.getNavigateLastPage();
         int prev = pageInfo.getPrePage();
         int pageSize = pageInfo.getPageSize();
         int next = pageInfo.getNextPage();
