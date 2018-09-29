@@ -1,14 +1,17 @@
 package com.anxi.activiti.act.rest.editor.model.impl;
 
 import com.anxi.activiti.act.rest.editor.model.ActModelEditorJsonRestResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.editor.model.ModelEditorJsonRestResource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,14 +27,33 @@ import java.io.UnsupportedEncodingException;
 public class ActModelEditorJsonRestResourceImpl implements ActModelEditorJsonRestResource {
 
     @Resource
-    private ModelEditorJsonRestResource modelEditorJsonRestResource;
-
-    @Resource
     private RepositoryService repositoryService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String getEditorJson(String modelId) {
-        return modelEditorJsonRestResource.getEditorJson(modelId).toString();
+        ObjectNode modelNode = null;
+        Model model = this.repositoryService.getModel(modelId);
+        if (model != null) {
+            try {
+                if (StringUtils.isNotEmpty(model.getMetaInfo())) {
+                    modelNode = (ObjectNode)this.objectMapper.readTree(model.getMetaInfo());
+                } else {
+                    modelNode = this.objectMapper.createObjectNode();
+                    modelNode.put("name", model.getName());
+                }
+
+                modelNode.put("modelId", model.getId());
+                ObjectNode editorJsonNode = (ObjectNode)this.objectMapper.readTree(new String(this.repositoryService.getModelEditorSource(model.getId()), "utf-8"));
+                modelNode.put("model", editorJsonNode);
+            } catch (Exception var5) {
+                log.error("Error creating model JSON", var5);
+                throw new ActivitiException("Error creating model JSON", var5);
+            }
+        }
+
+        return modelNode.toString();
     }
 
     @Override

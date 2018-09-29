@@ -1,7 +1,7 @@
 package com.anxi.activiti.act.rest.diagram.services.impl;
 
 import com.anxi.activiti.act.rest.diagram.services.ActProcessInstanceHighlightsResource;
-import org.activiti.rest.diagram.services.ProcessInstanceHighlightsResource;
+import com.anxi.activiti.act.rest.diagram.services.ProcessInstanceHighlightsResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

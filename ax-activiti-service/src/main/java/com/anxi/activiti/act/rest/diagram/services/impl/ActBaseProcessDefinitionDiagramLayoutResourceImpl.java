@@ -1,7 +1,7 @@
 package com.anxi.activiti.act.rest.diagram.services.impl;
 
 import com.anxi.activiti.act.rest.diagram.services.ActBaseProcessDefinitionDiagramLayoutResource;
-import org.activiti.rest.diagram.services.BaseProcessDefinitionDiagramLayoutResource;
+import com.anxi.activiti.act.rest.diagram.services.BaseProcessDefinitionDiagramLayoutResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
