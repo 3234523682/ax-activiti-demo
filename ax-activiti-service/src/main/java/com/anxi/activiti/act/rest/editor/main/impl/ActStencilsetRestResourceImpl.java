@@ -1,16 +1,16 @@
 package com.anxi.activiti.act.rest.editor.main.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.act.rest.editor.main.ActStencilsetRestResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiException;
-import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
 /**
  * Created by LJ on 2018/3/27
  */
-@Component("actStencilsetRestResource")
+@Service(path = "actStencilsetRestResource", version = "${activiti.service.version}")
 public class ActStencilsetRestResourceImpl implements ActStencilsetRestResource {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

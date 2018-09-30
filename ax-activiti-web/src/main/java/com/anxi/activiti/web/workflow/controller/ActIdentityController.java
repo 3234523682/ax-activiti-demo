@@ -16,7 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/workflow/identity")
 public class ActIdentityController {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActIdentityService actIdentityService;
 
     @RequestMapping(value = "actUserList")

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping(value = "/workflow/model")
 public class ModelController {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActRepositoryService actRepositoryService;
 
     /**
@@ -51,7 +51,7 @@ public class ModelController {
         Page<ActModelVO> page = new Page<>(actModelPageQuery.getPageNum(), actModelPageQuery.getPageSize(), pageInfo.getTotal(), pageInfo.getList());
         model.addAttribute("queryParam", actModelPageQuery);
         model.addAttribute("page", page);
-        return "/modules/act/actModelList";
+        return "modules/act/actModelList";
     }
 
     /**

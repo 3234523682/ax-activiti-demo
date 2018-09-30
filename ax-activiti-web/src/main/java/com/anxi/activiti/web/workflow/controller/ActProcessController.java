@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ import java.io.IOException;
 @RequestMapping(value = "/workflow/process")
 public class ActProcessController {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActProcessService actProcessService;
 
     /**

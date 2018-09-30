@@ -1,5 +1,6 @@
 package com.anxi.activiti.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.constant.ActCommonActivityType;
 import com.anxi.activiti.service.api.ActTaskService;
 import com.anxi.activiti.vo.ActHistoricActivityVO;
@@ -27,13 +28,11 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskInfoQuery;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -48,7 +47,7 @@ import java.util.Map;
  * Created by LJ on 2018/3/30
  */
 @Slf4j
-@Service("actTaskService")
+@Service(version = "${activiti.service.version}")
 public class ActTaskServiceImpl implements ActTaskService {
 
     @Resource
@@ -188,7 +187,7 @@ public class ActTaskServiceImpl implements ActTaskService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String startProcess(ActProcessStartDTO actProcessStartVo) throws IOException {
         String processStartUserId = actProcessStartVo.getProcessStartUserId();
         String procDefKey = actProcessStartVo.getProcDefKey();
@@ -225,7 +224,7 @@ public class ActTaskServiceImpl implements ActTaskService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTask(ActTaskDeleteDTO actTaskDeleteVo) {
         String taskId = actTaskDeleteVo.getTaskId();
         String deleteReason = actTaskDeleteVo.getDeleteReason();
@@ -233,7 +232,7 @@ public class ActTaskServiceImpl implements ActTaskService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void claimTask(ActTaskClaimDTO actTaskClaimVo) {
         String taskId = actTaskClaimVo.getTaskId();
         String userId = actTaskClaimVo.getUserId();
@@ -241,7 +240,7 @@ public class ActTaskServiceImpl implements ActTaskService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void completeTask(ActTaskCompleteDTO actTaskCompleteVo) throws IOException {
         String procInsId = actTaskCompleteVo.getProcInsId();
         String taskId = actTaskCompleteVo.getTaskId();

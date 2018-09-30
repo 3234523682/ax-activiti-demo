@@ -26,10 +26,9 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <!-- 分页插件 -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <artifactId>pagehelper</artifactId>
         </dependency>
 
     </dependencies>

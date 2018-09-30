@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 
 @RestController
 public class ModelSaveRestResourceController {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActModelSaveRestResource actModelSaveRestResource;
 
     @RequestMapping(value = "/act/service/model/{modelId}/save", method = RequestMethod.PUT)

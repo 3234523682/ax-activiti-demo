@@ -80,26 +80,11 @@
             <artifactId>activiti-json-converter</artifactId>
         </dependency>
 
-       <!-- <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-modeler</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-transcoder</artifactId>
+            <artifactId>batik-codec</artifactId>
             <version>1.7</version>
         </dependency>
-
-      <!--  <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-explorer</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-diagram-rest</artifactId>
-        </dependency>-->
 
     </dependencies>
 

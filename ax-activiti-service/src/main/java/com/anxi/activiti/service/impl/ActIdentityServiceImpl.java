@@ -1,5 +1,6 @@
 package com.anxi.activiti.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.service.api.ActIdentityService;
 import com.anxi.activiti.vo.ActGroupQuery;
 import com.anxi.activiti.vo.ActGroupSaveDTO;
@@ -18,7 +19,6 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -29,7 +29,7 @@ import java.util.List;
  * Created by LJ on 2018/5/8
  */
 @Slf4j
-@Service("actIdentityService")
+@Service(version = "${activiti.service.version}")
 public class ActIdentityServiceImpl implements ActIdentityService {
 
     @Resource

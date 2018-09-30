@@ -1,5 +1,6 @@
 package com.anxi.activiti.act.rest.editor.model.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.act.rest.editor.model.ActModelEditorJsonRestResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,7 +13,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.xml.stream.XMLInputFactory;
@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 @Slf4j
-@Component("actModelEditorJsonRestResource")
+@Service(path = "actModelEditorJsonRestResource", version = "${activiti.service.version}")
 public class ActModelEditorJsonRestResourceImpl implements ActModelEditorJsonRestResource {
 
     @Resource

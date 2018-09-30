@@ -1,5 +1,6 @@
 package com.anxi.activiti.act.rest.editor.model.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.act.rest.editor.model.ActModelSaveRestResource;
 import com.anxi.activiti.vo.ActModelSaveDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +12,6 @@ import org.activiti.engine.repository.Model;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 @Slf4j
-@Component("actModelSaveRestResource")
+@Service(path = "actModelSaveRestResource", version = "${activiti.service.version}")
 public class ActModelSaveRestResourceImpl implements ActModelSaveRestResource {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -30,7 +30,7 @@ public class ActModelSaveRestResourceImpl implements ActModelSaveRestResource {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveModel(ActModelSaveDTO actModelSaveDTO) {
         //modelSaveRestResource.saveModel(modelId, values);
         try {

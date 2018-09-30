@@ -12,15 +12,19 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * ps：spring boot 默认扫描您的类是 在启动类的“当前包”和“下级包”
  **/
 @SpringBootApplication
-public class SpringBootApp extends SpringBootServletInitializer {
+public class ActivitiWebApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(SpringBootApp.class);
+        return application.sources(ActivitiWebApplication.class);
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootApp.class, args);
+        SpringApplication.run(ActivitiWebApplication.class, args);
     }
 
+/*
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(SpringBootApp.class).web(WebApplicationType.SERVLET).run(args);
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.anxi.activiti.web.workflow.act.rest.diagram.services;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.anxi.activiti.act.rest.diagram.services.ActBaseProcessDefinitionDiagramLayoutResource;
 import com.anxi.activiti.web.workflow.act.rest.servlet.ActRestSupport;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,12 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-
 @RestController
 public class ProcessDefinitionDiagramLayoutResourceController extends ActRestSupport {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActBaseProcessDefinitionDiagramLayoutResource actBaseProcessDefinitionDiagramLayoutResource;
 
     @ResponseBody

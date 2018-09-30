@@ -11,9 +11,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  */
 @SpringBootApplication
 @MapperScan("com.anxi.dubbo.service.dao")
-public class ProviderSpringBootApplication {
+public class ActivitiServiceApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(ProviderSpringBootApplication.class).web(WebApplicationType.NONE).run(args);
+        new SpringApplicationBuilder(ActivitiServiceApplication.class).web(WebApplicationType.NONE).run(args);
     }
 }

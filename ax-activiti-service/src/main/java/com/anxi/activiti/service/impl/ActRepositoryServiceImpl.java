@@ -1,17 +1,18 @@
 package com.anxi.activiti.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.service.api.ActProcessService;
+import com.anxi.activiti.service.api.ActRepositoryService;
+import com.anxi.activiti.vo.ActDeploymentVO;
 import com.anxi.activiti.vo.ActModelNodeInfoVo;
+import com.anxi.activiti.vo.ActModelPageQuery;
 import com.anxi.activiti.vo.ActModelResourceDTO;
+import com.anxi.activiti.vo.ActModelVO;
+import com.anxi.activiti.vo.CreateModelDTO;
 import com.anxi.activiti.vo.SetProcessCategoryDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.anxi.activiti.service.api.ActRepositoryService;
-import com.anxi.activiti.vo.ActDeploymentVO;
-import com.anxi.activiti.vo.ActModelPageQuery;
-import com.anxi.activiti.vo.ActModelVO;
-import com.anxi.activiti.vo.CreateModelDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -28,12 +29,12 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +44,7 @@ import java.util.List;
  * Created by LJ on 2018/3/22
  */
 @Slf4j
-@Service("actRepositoryService")
+@Service(version = "${activiti.service.version}")
 public class ActRepositoryServiceImpl implements ActRepositoryService {
 
     @Resource
@@ -80,13 +81,13 @@ public class ActRepositoryServiceImpl implements ActRepositoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addModelEditorSource(String modelId, byte[] bytes) {
         repositoryService.addModelEditorSource(modelId, bytes);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActModelVO createModel(CreateModelDTO createModelVo) throws Exception {
         String name = createModelVo.getModelName();
         String key = createModelVo.getModelKey();
@@ -114,18 +115,18 @@ public class ActRepositoryServiceImpl implements ActRepositoryService {
         modelData.setKey(StringUtils.defaultString(key));
         modelData.setCategory(category);
         repositoryService.saveModel(modelData);
-        repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+        repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes(StandardCharsets.UTF_8));
         return this.modelTransformActModelVO(modelData);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addModelEditorSourceExtra(String modelId, byte[] bytes) {
         repositoryService.addModelEditorSourceExtra(modelId, bytes);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteModel(String modelId) {
         repositoryService.deleteModel(modelId);
     }
@@ -171,7 +172,7 @@ public class ActRepositoryServiceImpl implements ActRepositoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActDeploymentVO modelDeploy(String modelId) {
         try {
             Model modelData = repositoryService.getModel(modelId);

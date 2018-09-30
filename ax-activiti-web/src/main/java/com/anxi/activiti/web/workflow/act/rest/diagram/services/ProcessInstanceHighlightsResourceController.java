@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 
 @RestController
 public class ProcessInstanceHighlightsResourceController extends ActRestSupport {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActProcessInstanceHighlightsResource actProcessInstanceHighlightsResource;
 
     @ResponseBody

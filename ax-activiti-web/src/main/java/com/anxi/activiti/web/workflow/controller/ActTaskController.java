@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
+import com.alibaba.dubbo.config.annotation.Reference;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
@@ -39,16 +39,16 @@ import java.util.List;
 @RequestMapping(value = "/workflow/task")
 public class ActTaskController {
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActTaskService actTaskService;
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActProcessService actProcessService;
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActIdentityService actIdentityService;
 
-    @Resource
+    @Reference(version = "${activiti.service.version}")
     private ActRepositoryService actRepositoryService;
 
     /**

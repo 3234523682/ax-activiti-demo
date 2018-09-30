@@ -1,8 +1,8 @@
 package com.anxi.activiti.act.rest.diagram.services.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.act.rest.diagram.services.ActBaseProcessDefinitionDiagramLayoutResource;
 import com.anxi.activiti.act.rest.diagram.services.BaseProcessDefinitionDiagramLayoutResource;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
@@ -10,7 +10,7 @@ import javax.annotation.Resource;
  * 基本流程定义图布局资源
  * Created by LJ on 2018/3/27
  */
-@Component("actBaseProcessDefinitionDiagramLayoutResource")
+@Service(path = "actBaseProcessDefinitionDiagramLayoutResource", version = "${activiti.service.version}")
 public class ActBaseProcessDefinitionDiagramLayoutResourceImpl implements ActBaseProcessDefinitionDiagramLayoutResource {
 
     @Resource

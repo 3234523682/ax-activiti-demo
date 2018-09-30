@@ -1,5 +1,6 @@
 package com.anxi.activiti.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.anxi.activiti.constant.ActProcessResourceType;
 import com.anxi.activiti.service.api.ActProcessService;
 import com.anxi.activiti.vo.ActProcessDefinitionQuery;
@@ -31,7 +32,6 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -42,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipInputStream;
@@ -50,7 +51,7 @@ import java.util.zip.ZipInputStream;
  * Created by LJ on 2018/3/26
  */
 @Slf4j
-@Service("actProcessService")
+@Service(version = "${activiti.service.version}")
 public class ActProcessServiceImpl implements ActProcessService {
 
     @Resource
@@ -120,13 +121,13 @@ public class ActProcessServiceImpl implements ActProcessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void setProcessCategory(SetProcessCategoryDTO updateProcessCategory) {
         repositoryService.setProcessDefinitionCategory(updateProcessCategory.getProcDefId(), updateProcessCategory.getCategory());
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void setProcessState(SetProcessStateDTO setProcessState) {
         String procDefId = setProcessState.getProcDefId();
         if (setProcessState.isActivate()) {
@@ -139,7 +140,7 @@ public class ActProcessServiceImpl implements ActProcessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean processDeploy(ActProcessDeployDTO actProcessDeployDTO) {
         try {
             String fileName = actProcessDeployDTO.getFileName();
@@ -147,12 +148,13 @@ public class ActProcessServiceImpl implements ActProcessService {
             String category = actProcessDeployDTO.getCategory();
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(actProcessDeployDTO.getFileContentBytes());
             Deployment deployment;
-            if (extension.equals("zip") || extension.equals("bar")) {
+            if ("zip".equals(extension) || "bar".equals(extension)) {
                 ZipInputStream zip = new ZipInputStream(byteArrayInputStream);
                 deployment = repositoryService.createDeployment().addZipInputStream(zip).deploy();
             } else if (fileName.contains("bpmn20.xml")) {
                 deployment = repositoryService.createDeployment().addInputStream(fileName, byteArrayInputStream).deploy();
-            } else if (extension.equals("bpmn")) { // bpmn扩展名特殊处理，转换为bpmn20.xml
+            } else if ("bpmn".equals(extension)) {
+                // bpmn扩展名特殊处理，转换为bpmn20.xml
                 String baseName = FilenameUtils.getBaseName(fileName);
                 deployment = repositoryService.createDeployment().addInputStream(baseName + ".bpmn20.xml", byteArrayInputStream).deploy();
             } else {
@@ -178,12 +180,12 @@ public class ActProcessServiceImpl implements ActProcessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void convertToModel(String procDefId) throws Exception {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId).singleResult();
         InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
         XMLInputFactory xif = XMLInputFactory.newInstance();
-        InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
+        InputStreamReader in = new InputStreamReader(bpmnStream, StandardCharsets.UTF_8);
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
         BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
 
@@ -192,7 +194,7 @@ public class ActProcessServiceImpl implements ActProcessService {
         org.activiti.engine.repository.Model modelData = repositoryService.newModel();
         modelData.setKey(processDefinition.getKey());
         modelData.setName(processDefinition.getName());
-        modelData.setCategory(processDefinition.getCategory());//.getDeploymentId());
+        modelData.setCategory(processDefinition.getCategory());
         modelData.setDeploymentId(processDefinition.getDeploymentId());
         modelData.setVersion(Integer.parseInt(String.valueOf(repositoryService.createModelQuery().modelKey(modelData.getKey()).count() + 1)));
 
@@ -203,7 +205,7 @@ public class ActProcessServiceImpl implements ActProcessService {
         modelData.setMetaInfo(modelObjectNode.toString());
 
         repositoryService.saveModel(modelData);
-        repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
+        repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -233,13 +235,13 @@ public class ActProcessServiceImpl implements ActProcessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteDeployment(String deploymentId) {
         repositoryService.deleteDeployment(deploymentId, true);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteProcIns(DeleteProcInsDTO deleteProcIns) {
         runtimeService.deleteProcessInstance(deleteProcIns.getProcInsId(), deleteProcIns.getDeleteReason());
     }
