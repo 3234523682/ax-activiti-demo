@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>流程管理</title>
-    <meta name="decorator" content="default"/>
+
 </head>
 <body>
 <ul class="nav nav-tabs">

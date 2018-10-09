@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="decorator" content="default"/>
+
     <title>用户列表</title>
 </head>
 <body>

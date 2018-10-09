@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="decorator" content="default"/>
-    <title>流程列表</title>
+    <title>模型列表</title>
 </head>
 <body>
 <ul class="nav nav-tabs">
-    <li class="active"><a href="${ctx}/workflow/model/list">流程列表</a></li>
+    <li class="active"><a href="${ctx}/workflow/model/list">模型列表</a></li>
     <li><a href="${ctx}/workflow/model/create">新建模型</a></li>
 </ul>
 <form id="searchForm" action="${ctx}/workflow/model/list" method="post" class="breadcrumb form-search">

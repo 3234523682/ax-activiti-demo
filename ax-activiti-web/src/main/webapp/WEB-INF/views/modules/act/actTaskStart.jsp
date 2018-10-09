@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="decorator" content="default"/>
+
     <title>流程任务开启</title>
 </head>
 <body>

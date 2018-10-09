@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>待签任务列表</title>
-    <meta name="decorator" content="default"/>
+
     <script type="text/javascript">
         $(document).ready(function () {
 

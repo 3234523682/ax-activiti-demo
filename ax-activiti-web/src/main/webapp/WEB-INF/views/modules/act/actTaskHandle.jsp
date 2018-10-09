@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="decorator" content="default"/>
+
     <title>Act任务办理</title>
 </head>
 <body>

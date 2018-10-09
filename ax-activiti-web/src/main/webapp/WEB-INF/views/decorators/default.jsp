@@ -1,10 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" pageEncoding="utf-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp" %>
-<%@ taglib prefix="sitemesh" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><sitemesh:title/></title>
+    <title><sitemesh:write property='title' /></title>
     <%@include file="/WEB-INF/views/include/head.jsp" %>
     <style>
         html, body, .parent {
@@ -50,7 +49,7 @@
         }
     </style>
     <meta charset="UTF-8"/>
-    <sitemesh:head/>
+    <sitemesh:write property='head' />
 </head>
 <body>
 <div class="parent" id="parent">
@@ -68,7 +67,7 @@
         <%@include file="/WEB-INF/views/include/menuleft.jsp" %>
     </div>
     <div class="right">
-        <p><sitemesh:body/></p>
+        <p><sitemesh:write property='body' /></p>
     </div>
     <div class="bottom" style="background-color: lightgreen;">
         <p>bottom</p>

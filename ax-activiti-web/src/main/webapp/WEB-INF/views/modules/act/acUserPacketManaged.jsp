@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="decorator" content="default"/>
+
     <title>Act用户分组管理</title>
 </head>
 <body>

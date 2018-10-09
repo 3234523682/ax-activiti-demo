@@ -18,8 +18,7 @@ public class ActStencilsetRestResourceImpl implements ActStencilsetRestResource 
     @Override
     public String getStencilset() {
         try {
-            InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("stencilset.json");
-            //return IOUtils.toString(stencilsetStream, "utf-8");
+            InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("stencilset.zh-cn.json");
             return objectMapper.readTree(stencilsetStream).toString();
         } catch (Exception e) {
             throw new ActivitiException("Error while loading stencil set", e);

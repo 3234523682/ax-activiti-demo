@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="decorator" content="default"/>
+
     <title>部署流程</title>
 </head>
 <body>

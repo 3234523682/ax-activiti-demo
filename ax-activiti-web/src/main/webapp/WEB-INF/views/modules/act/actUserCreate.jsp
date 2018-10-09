@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <meta name="decorator" content="default"/>
+
     <title>新建Act用户</title>
 </head>
 <body>
